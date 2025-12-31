@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import type { Client, FollowUp, Requirement, Proposal, Payment, Project } from "@shared/schema";
-import { ArrowLeft, Plus } from "lucide-react";
+import { ArrowLeft, Plus, Phone, Mail, Building2, CheckCircle2, Clock, FileText, CreditCard, Hammer } from "lucide-react";
 
 export default function ClientDetail() {
   const { clientId } = useParams<{ clientId: string }>();
@@ -36,43 +36,138 @@ export default function ClientDetail() {
   if (!client) return <div className="p-6">Loading...</div>;
 
   return (
-    <div className="p-6 space-y-6">
-      <Link href="/crm">
-        <Button variant="ghost" data-testid="button-back">
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          Back to Clients
-        </Button>
-      </Link>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900 p-8">
+      <div className="max-w-5xl mx-auto">
+        {/* Back Button */}
+        <Link href="/crm">
+          <Button variant="ghost" className="mb-6" data-testid="button-back">
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back to Clients
+          </Button>
+        </Link>
 
-      {/* Client Info */}
-      <Card className="p-6">
-        <h1 className="text-2xl font-bold mb-4">{client.name}</h1>
-        <div className="grid grid-cols-2 gap-4 text-sm">
-          <div>
-            <p className="text-secondary-foreground">Phone</p>
-            <p className="font-semibold">{client.phone}</p>
-          </div>
-          {client.email && (
+        {/* Client Header */}
+        <Card className="p-8 mb-8 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950 dark:to-indigo-950 border border-blue-200 dark:border-blue-800">
+          <div className="flex justify-between items-start mb-6">
             <div>
-              <p className="text-secondary-foreground">Email</p>
-              <p className="font-semibold">{client.email}</p>
+              <h1 className="text-4xl font-bold text-foreground mb-2">{client.name}</h1>
+              <p className="text-muted-foreground">Client Profile & Project Status</p>
             </div>
-          )}
-          {client.company && (
-            <div>
-              <p className="text-secondary-foreground">Company</p>
-              <p className="font-semibold">{client.company}</p>
-            </div>
-          )}
-          <div>
-            <p className="text-secondary-foreground">Service Needed</p>
-            <p className="font-semibold">{client.serviceNeeded}</p>
+            <Badge className="bg-green-100 dark:bg-green-900 text-green-900 dark:text-green-100">Active</Badge>
           </div>
-        </div>
-      </Card>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="flex items-center gap-3">
+              <Phone className="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0" />
+              <div className="min-w-0">
+                <p className="text-xs text-muted-foreground">Phone</p>
+                <p className="text-sm font-semibold text-foreground truncate">{client.phone}</p>
+              </div>
+            </div>
+            {client.email && (
+              <div className="flex items-center gap-3">
+                <Mail className="w-5 h-5 text-purple-600 dark:text-purple-400 flex-shrink-0" />
+                <div className="min-w-0">
+                  <p className="text-xs text-muted-foreground">Email</p>
+                  <p className="text-sm font-semibold text-foreground truncate">{client.email}</p>
+                </div>
+              </div>
+            )}
+            {client.company && (
+              <div className="flex items-center gap-3">
+                <Building2 className="w-5 h-5 text-orange-600 dark:text-orange-400 flex-shrink-0" />
+                <div className="min-w-0">
+                  <p className="text-xs text-muted-foreground">Company</p>
+                  <p className="text-sm font-semibold text-foreground truncate">{client.company}</p>
+                </div>
+              </div>
+            )}
+            <div className="flex items-center gap-3">
+              <Hammer className="w-5 h-5 text-teal-600 dark:text-teal-400 flex-shrink-0" />
+              <div className="min-w-0">
+                <p className="text-xs text-muted-foreground">Service</p>
+                <p className="text-sm font-semibold text-foreground truncate">{client.serviceNeeded}</p>
+              </div>
+            </div>
+          </div>
+        </Card>
 
-      {/* Follow-Ups */}
-      <Card className="p-6">
+        {/* Progress Pipeline */}
+        <Card className="p-8 mb-8">
+          <h2 className="text-2xl font-bold mb-6 text-foreground">Project Pipeline</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* Follow-Up Status */}
+            <div className="border-l-4 border-l-blue-500 p-4 bg-blue-50 dark:bg-blue-950 rounded-r">
+              <div className="flex items-center gap-2 mb-2">
+                <Clock className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                <p className="font-semibold text-foreground">Follow-Ups</p>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                {followUps.length === 0 ? "No follow-ups yet" : `${followUps.length} interaction${followUps.length > 1 ? 's' : ''}`}
+              </p>
+            </div>
+
+            {/* Requirement Status */}
+            <div className={`border-l-4 p-4 rounded-r ${requirement ? 'border-l-green-500 bg-green-50 dark:bg-green-950' : 'border-l-gray-300 bg-gray-50 dark:bg-gray-950'}`}>
+              <div className="flex items-center gap-2 mb-2">
+                <FileText className={`w-5 h-5 ${requirement ? 'text-green-600 dark:text-green-400' : 'text-gray-400'}`} />
+                <p className="font-semibold text-foreground">Requirements</p>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                {requirement ? "Collected" : "Pending"}
+              </p>
+            </div>
+
+            {/* Proposal Status */}
+            <div className={`border-l-4 p-4 rounded-r ${proposal ? 'border-l-purple-500 bg-purple-50 dark:bg-purple-950' : 'border-l-gray-300 bg-gray-50 dark:bg-gray-950'}`}>
+              <div className="flex items-center gap-2 mb-2">
+                <FileText className={`w-5 h-5 ${proposal ? 'text-purple-600 dark:text-purple-400' : 'text-gray-400'}`} />
+                <p className="font-semibold text-foreground">Proposal</p>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                {proposal ? "Created" : "Pending"}
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+            {/* Payment Status */}
+            <div className={`border-l-4 p-4 rounded-r ${payment ? 'border-l-green-500 bg-green-50 dark:bg-green-950' : 'border-l-gray-300 bg-gray-50 dark:bg-gray-950'}`}>
+              <div className="flex items-center gap-2 mb-2">
+                <CreditCard className={`w-5 h-5 ${payment ? 'text-green-600 dark:text-green-400' : 'text-gray-400'}`} />
+                <p className="font-semibold text-foreground">Payment</p>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                {payment ? payment.balanceAmount === 0 ? "Completed" : "In Progress" : "Pending"}
+              </p>
+            </div>
+
+            {/* Project Status */}
+            <div className={`border-l-4 p-4 rounded-r ${project ? 'border-l-orange-500 bg-orange-50 dark:bg-orange-950' : 'border-l-gray-300 bg-gray-50 dark:bg-gray-950'}`}>
+              <div className="flex items-center gap-2 mb-2">
+                <Hammer className={`w-5 h-5 ${project ? 'text-orange-600 dark:text-orange-400' : 'text-gray-400'}`} />
+                <p className="font-semibold text-foreground">Project</p>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                {project ? project.projectStage : "Not Started"}
+              </p>
+            </div>
+
+            {/* Delivery Status */}
+            <div className={`border-l-4 p-4 rounded-r ${project?.projectStage === 'Delivered' ? 'border-l-green-500 bg-green-50 dark:bg-green-950' : 'border-l-gray-300 bg-gray-50 dark:bg-gray-950'}`}>
+              <div className="flex items-center gap-2 mb-2">
+                <CheckCircle2 className={`w-5 h-5 ${project?.projectStage === 'Delivered' ? 'text-green-600 dark:text-green-400' : 'text-gray-400'}`} />
+                <p className="font-semibold text-foreground">Delivery</p>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                {project?.projectStage === 'Delivered' ? "Completed" : "In Progress"}
+              </p>
+            </div>
+          </div>
+        </Card>
+
+        {/* Follow-Ups */}
+        <Card className="p-8">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-bold">Follow-Ups (Most Important)</h2>
           <Link href={`/crm/clients/${clientId}/follow-up`}>
@@ -200,6 +295,7 @@ export default function ClientDetail() {
           <p className="text-secondary-foreground">Not created yet.</p>
         )}
       </Card>
+      </div>
     </div>
   );
 }
