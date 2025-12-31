@@ -5,9 +5,21 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import type { Client, FollowUp, Requirement, Proposal, Payment, Project } from "@shared/schema";
 import { ArrowLeft, Plus, Phone, Mail, Building2, CheckCircle2, Clock, FileText, CreditCard, Hammer } from "lucide-react";
+import { useState } from "react";
+import { FollowUpDialog } from "@/components/FollowUpDialog";
+import { RequirementDialog } from "@/components/RequirementDialog";
+import { ProposalDialog } from "@/components/ProposalDialog";
+import { PaymentDialog } from "@/components/PaymentDialog";
+import { ProjectDialog } from "@/components/ProjectDialog";
 
 export default function ClientDetail() {
   const { clientId } = useParams<{ clientId: string }>();
+  const [isFollowUpOpen, setIsFollowUpOpen] = useState(false);
+  const [isRequirementOpen, setIsRequirementOpen] = useState(false);
+  const [isProposalOpen, setIsProposalOpen] = useState(false);
+  const [isPaymentOpen, setIsPaymentOpen] = useState(false);
+  const [isProjectOpen, setIsProjectOpen] = useState(false);
+
 
   const { data: client } = useQuery<Client>({
     queryKey: [`/api/crm/clients/${clientId}`],
@@ -38,6 +50,35 @@ export default function ClientDetail() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900 p-8">
       <div className="max-w-5xl mx-auto">
+        <FollowUpDialog 
+          clientId={clientId!} 
+          open={isFollowUpOpen} 
+          onOpenChange={setIsFollowUpOpen} 
+        />
+        <RequirementDialog 
+          clientId={clientId!} 
+          requirement={requirement}
+          open={isRequirementOpen} 
+          onOpenChange={setIsRequirementOpen} 
+        />
+        <ProposalDialog 
+          clientId={clientId!} 
+          proposal={proposal}
+          open={isProposalOpen} 
+          onOpenChange={setIsProposalOpen} 
+        />
+        <PaymentDialog 
+          clientId={clientId!} 
+          payment={payment}
+          open={isPaymentOpen} 
+          onOpenChange={setIsPaymentOpen} 
+        />
+        <ProjectDialog 
+          clientId={clientId!} 
+          project={project}
+          open={isProjectOpen} 
+          onOpenChange={setIsProjectOpen} 
+        />
         {/* Back Button */}
         <Link href="/admin/dashboard/crm">
           <Button variant="ghost" className="mb-6" data-testid="button-back">
@@ -45,6 +86,7 @@ export default function ClientDetail() {
             Back to Clients
           </Button>
         </Link>
+
 
         {/* Client Header */}
         <Card className="p-8 mb-8 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950 dark:to-indigo-950 border border-blue-200 dark:border-blue-800">
@@ -170,12 +212,10 @@ export default function ClientDetail() {
         <Card className="p-8">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-bold">Follow-Ups (Most Important)</h2>
-          <Link href={`/admin/dashboard/crm/clients/${clientId}/follow-up`}>
-            <Button size="sm" data-testid="button-add-followup">
-              <Plus className="w-4 h-4 mr-1" />
-              New
-            </Button>
-          </Link>
+          <Button size="sm" onClick={() => setIsFollowUpOpen(true)} data-testid="button-add-followup">
+            <Plus className="w-4 h-4 mr-1" />
+            New
+          </Button>
         </div>
         {followUps.length === 0 ? (
           <p className="text-secondary-foreground">No follow-ups yet.</p>
@@ -198,12 +238,10 @@ export default function ClientDetail() {
       <Card className="p-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-bold">Requirements</h2>
-          <Link href={`/admin/dashboard/crm/clients/${clientId}/requirement`}>
-            <Button size="sm" data-testid="button-add-requirement">
-              <Plus className="w-4 h-4 mr-1" />
-              New
-            </Button>
-          </Link>
+          <Button size="sm" onClick={() => setIsRequirementOpen(true)} data-testid="button-add-requirement">
+            <Plus className="w-4 h-4 mr-1" />
+            {requirement ? "Edit" : "New"}
+          </Button>
         </div>
         {requirement ? (
           <div className="space-y-2 text-sm">
@@ -217,16 +255,15 @@ export default function ClientDetail() {
         )}
       </Card>
 
+
       {/* Proposal */}
       <Card className="p-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-bold">Proposal</h2>
-          <Link href={`/admin/dashboard/crm/clients/${clientId}/proposal`}>
-            <Button size="sm" data-testid="button-add-proposal">
-              <Plus className="w-4 h-4 mr-1" />
-              New
-            </Button>
-          </Link>
+          <Button size="sm" onClick={() => setIsProposalOpen(true)} data-testid="button-add-proposal">
+            <Plus className="w-4 h-4 mr-1" />
+            {proposal ? "Edit" : "New"}
+          </Button>
         </div>
         {proposal ? (
           <div className="space-y-2 text-sm">
@@ -246,12 +283,10 @@ export default function ClientDetail() {
       <Card className="p-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-bold">Payment</h2>
-          <Link href={`/admin/dashboard/crm/clients/${clientId}/payment`}>
-            <Button size="sm" data-testid="button-add-payment">
-              <Plus className="w-4 h-4 mr-1" />
-              New
-            </Button>
-          </Link>
+          <Button size="sm" onClick={() => setIsPaymentOpen(true)} data-testid="button-add-payment">
+            <Plus className="w-4 h-4 mr-1" />
+            {payment ? "Edit" : "New"}
+          </Button>
         </div>
         {payment ? (
           <div className="space-y-2 text-sm">
@@ -278,12 +313,10 @@ export default function ClientDetail() {
       <Card className="p-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-bold">Project Status</h2>
-          <Link href={`/admin/dashboard/crm/clients/${clientId}/project`}>
-            <Button size="sm" data-testid="button-add-project">
-              <Plus className="w-4 h-4 mr-1" />
-              New
-            </Button>
-          </Link>
+          <Button size="sm" onClick={() => setIsProjectOpen(true)} data-testid="button-add-project">
+            <Plus className="w-4 h-4 mr-1" />
+            {project ? "Edit" : "New"}
+          </Button>
         </div>
         {project ? (
           <div className="space-y-2 text-sm">
