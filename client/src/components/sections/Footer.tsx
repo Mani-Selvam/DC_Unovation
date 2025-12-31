@@ -47,13 +47,9 @@ export function Footer({ onNewsletterSubmit }: FooterProps) {
         ],
         Company: [
             { label: "About Us", href: "about" },
-            { label: "Portfolio", href: "portfolio" },
-            { label: "Careers", href: "careers" },
-            { label: "Blog", href: "blog" },
             { label: "Contact", href: "contact" },
         ],
         Resources: [
-            { label: "Case Studies", href: "portfolio" },
             { label: "Our Process", href: "process" },
             { label: "Testimonials", href: "testimonials" },
             { label: "FAQ", href: "contact" },

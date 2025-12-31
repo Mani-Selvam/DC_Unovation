@@ -5,35 +5,22 @@ import { About } from "@/components/sections/About";
 import { Services } from "@/components/sections/Services";
 import { Process } from "@/components/sections/Process";
 import { Pricing } from "@/components/sections/Pricing";
-// import { Portfolio } from "@/components/sections/Portfolio";
 import Testimonials from "@/components/sections/Testimonials";
-// import { Metrics } from "@/components/sections/Metrics";
-// import { Blog } from "@/components/sections/Blog";
-import { Careers } from "@/components/sections/Careers";
 import { Contact } from "@/components/sections/Contact";
 import { Footer } from "@/components/sections/Footer";
 import { BookDemoModal } from "@/components/modals/BookDemoModal";
-import { ProjectInterestModal } from "@/components/modals/ProjectInterestModal";
-import { JobApplicationModal } from "@/components/modals/JobApplicationModal";
 import { GoogleLoginButton } from "@/components/GoogleLoginButton";
 import { useToast } from "@/hooks/use-toast";
 import { getStoredUser, type GoogleUser } from "@/lib/googleAuth";
 import {
     submitServiceInquiry,
-    submitProjectInterest,
-    submitJobApplication,
     submitContact,
     submitNewsletterFooter,
 } from "@/lib/api";
-import type { PortfolioProject } from "@/data/portfolio";
 
 export default function Home() {
     const { toast } = useToast();
     const [bookDemoOpen, setBookDemoOpen] = useState(false);
-    const [projectInterestOpen, setProjectInterestOpen] = useState(false);
-    const [selectedProject, setSelectedProject] =
-        useState<PortfolioProject | null>(null);
-    const [jobApplicationOpen, setJobApplicationOpen] = useState(false);
     const [currentUser, setCurrentUser] = useState<GoogleUser | null>(null);
 
     useEffect(() => {
@@ -67,60 +54,6 @@ export default function Home() {
 
     const handleGetQuote = async () => {
         setBookDemoOpen(true);
-    };
-
-    const handleProjectInterest = (project: PortfolioProject) => {
-        setSelectedProject(project);
-        setProjectInterestOpen(true);
-    };
-
-    const handleProjectInterestSubmit = async (data: {
-        project: string;
-        name: string;
-        email: string;
-        message?: string;
-    }) => {
-        try {
-            await submitProjectInterest({
-                ...data,
-                page: "home",
-            });
-            toast({
-                title: "Inquiry Submitted!",
-                description:
-                    "We'll reach out to discuss your project requirements shortly.",
-            });
-        } catch (error) {
-            toast({
-                title: "Error",
-                description: "Failed to submit your inquiry. Please try again.",
-                variant: "destructive",
-            });
-        }
-    };
-
-    const handleJobApplication = async (data: {
-        name: string;
-        email: string;
-        phone: string;
-        role: string;
-        message: string;
-    }) => {
-        try {
-            await submitJobApplication(data);
-            toast({
-                title: "Application Received!",
-                description:
-                    "Thank you for your interest. We'll review your application and be in touch.",
-            });
-        } catch (error) {
-            toast({
-                title: "Error",
-                description:
-                    "Failed to submit your application. Please try again.",
-                variant: "destructive",
-            });
-        }
     };
 
     const handleContactSubmit = async (data: {
@@ -180,12 +113,8 @@ export default function Home() {
             />
             <Services />
             <Process />
-            {/* <Portfolio onProjectInterest={handleProjectInterest} /> */}
             <About />
             <Pricing />
-            {/* <Metrics /> */}
-            {/* <Blog /> */}
-            {/* <Careers onApplyClick={() => setJobApplicationOpen(true)} /> */}
             <Contact onSubmit={handleContactSubmit} />
             <Testimonials />
             <Footer onNewsletterSubmit={handleNewsletterSubmit} />
@@ -205,19 +134,6 @@ export default function Home() {
                 open={bookDemoOpen}
                 onOpenChange={setBookDemoOpen}
                 onSubmit={handleBookDemo}
-            />
-
-            <ProjectInterestModal
-                open={projectInterestOpen}
-                onOpenChange={setProjectInterestOpen}
-                projectTitle={selectedProject?.title || ""}
-                onSubmit={handleProjectInterestSubmit}
-            />
-
-            <JobApplicationModal
-                open={jobApplicationOpen}
-                onOpenChange={setJobApplicationOpen}
-                onSubmit={handleJobApplication}
             />
         </div>
     );
