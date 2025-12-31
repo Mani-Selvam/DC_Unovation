@@ -26,16 +26,16 @@ function Router() {
       <Route path="/admin" component={AdminLogin} />
       <Route path="/admin/dashboard" component={AdminDashboard} />
       <Route path="/admin/dashboard/inquiries">
-        <AdminDashboard defaultTab="inquiries" />
+        {(props: any) => <AdminDashboard {...props} defaultTab="inquiries" />}
       </Route>
       <Route path="/admin/dashboard/quotes">
-        <AdminDashboard defaultTab="quotes" />
+        {(props: any) => <AdminDashboard {...props} defaultTab="quotes" />}
       </Route>
       <Route path="/admin/dashboard/contact">
-        <AdminDashboard defaultTab="contact" />
+        {(props: any) => <AdminDashboard {...props} defaultTab="contact" />}
       </Route>
       <Route path="/admin/dashboard/newsletter">
-        <AdminDashboard defaultTab="newsletter" />
+        {(props: any) => <AdminDashboard {...props} defaultTab="newsletter" />}
       </Route>
       
       {/* CRM Routes - Integrated under Admin Dashboard */}
