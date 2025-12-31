@@ -19,7 +19,8 @@ export function Hero({ onBookDemo, onGetQuote }: HeroProps) {
         <section
             id="hero"
             className="relative overflow-hidden bg-slate-50 pt-20 pb-32 lg:pt-32"
-            data-testid="section-hero">
+            data-testid="section-hero"
+        >
             {/* Background Grid Pattern */}
             <div className="absolute inset-0 -z-10 h-full w-full bg-[linear-gradient(to_right,#e2e8f0_1px,transparent_1px),linear-gradient(to_bottom,#e2e8f0_1px,transparent_1px)] bg-[size:40px_40px] opacity-50" />
 
@@ -54,7 +55,8 @@ export function Hero({ onBookDemo, onGetQuote }: HeroProps) {
                                 size="lg"
                                 onClick={onBookDemo}
                                 className="h-12 px-8 text-base bg-indigo-600 hover:bg-indigo-700 text-white shadow-xl shadow-indigo-200"
-                                data-testid="button-book-demo-hero">
+                                data-testid="button-book-demo-hero"
+                            >
                                 Book a Demo
                                 <ArrowRight className="ml-2 h-4 w-4" />
                             </Button>
@@ -64,7 +66,8 @@ export function Hero({ onBookDemo, onGetQuote }: HeroProps) {
                                 variant="outline"
                                 onClick={onGetQuote}
                                 className="h-12 px-8 text-base border-slate-300 bg-white text-slate-700 hover:bg-slate-50 hover:text-slate-900"
-                                data-testid="button-get-quote-hero">
+                                data-testid="button-get-quote-hero"
+                            >
                                 <Quote className="mr-2 h-4 w-4 text-slate-500" />
                                 Get a Quote
                             </Button>
@@ -195,7 +198,7 @@ export function Hero({ onBookDemo, onGetQuote }: HeroProps) {
                                         </span>
                                         :{" "}
                                         <span className="text-yellow-300">
-                                            "DCUnovation"
+                                            "DCU"
                                         </span>
                                         ,
                                     </p>

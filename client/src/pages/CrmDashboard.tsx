@@ -4,10 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { CrmSidebar } from "@/components/CrmSidebar";
+import { ClientFormDialog } from "@/components/ClientFormDialog";
 import type { Client } from "@shared/schema";
 import { Plus, Users, PhoneCall, Briefcase } from "lucide-react";
+import { useState } from "react";
 
 export default function CrmDashboard() {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { data: clients, isLoading } = useQuery<Client[]>({
     queryKey: ["/api/crm/clients"],
   });
@@ -26,13 +29,18 @@ export default function CrmDashboard() {
             <h1 className="text-4xl font-bold text-foreground mb-2">CRM Dashboard</h1>
             <p className="text-muted-foreground">Manage your clients and track follow-ups</p>
           </div>
-          <Link href="/admin/dashboard/crm/clients/new">
-            <Button size="lg" className="gap-2" data-testid="button-add-client">
-              <Plus className="w-5 h-5" />
-              New Client
-            </Button>
-          </Link>
+          <Button 
+            size="lg" 
+            className="gap-2" 
+            data-testid="button-add-client"
+            onClick={() => setIsDialogOpen(true)}
+          >
+            <Plus className="w-5 h-5" />
+            New Client
+          </Button>
         </div>
+
+        <ClientFormDialog open={isDialogOpen} onOpenChange={setIsDialogOpen} />
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
@@ -77,12 +85,15 @@ export default function CrmDashboard() {
               <Users className="w-16 h-16 text-muted-foreground mx-auto mb-4 opacity-40" />
               <p className="text-muted-foreground text-lg mb-4">No clients yet</p>
               <p className="text-muted-foreground mb-6">Start building your client list by adding your first client.</p>
-              <Link href="/admin/dashboard/crm/clients/new">
-                <Button size="lg" className="gap-2" data-testid="button-add-first-client">
-                  <Plus className="w-5 h-5" />
-                  Create First Client
-                </Button>
-              </Link>
+              <Button 
+                size="lg" 
+                className="gap-2" 
+                data-testid="button-add-first-client"
+                onClick={() => setIsDialogOpen(true)}
+              >
+                <Plus className="w-5 h-5" />
+                Create First Client
+              </Button>
             </Card>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
