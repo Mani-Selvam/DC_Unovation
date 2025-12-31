@@ -154,7 +154,9 @@ export const insertFollowUpSchema = createInsertSchema(followUps).omit({
     dateCreated: true,
 });
 
-export const insertRequirementSchema = createInsertSchema(requirements).omit({
+export const insertRequirementSchema = createInsertSchema(requirements, {
+    deadline: z.string().optional().transform(v => v ? new Date(v) : undefined),
+}).omit({
     id: true,
     dateCreated: true,
 });
@@ -169,7 +171,9 @@ export const insertPaymentSchema = createInsertSchema(payments).omit({
     dateCreated: true,
 });
 
-export const insertProjectSchema = createInsertSchema(projects).omit({
+export const insertProjectSchema = createInsertSchema(projects, {
+    expectedDeliveryDate: z.string().optional().transform(v => v ? new Date(v) : undefined),
+}).omit({
     id: true,
     dateCreated: true,
 });
