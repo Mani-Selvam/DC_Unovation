@@ -25,12 +25,7 @@ import {
   Clock,
   User,
   ExternalLink,
-  Trash2,
-  CheckCircle2,
-  AlertCircle,
-  Clock3,
-  XCircle,
-  StickyNote
+  Trash2
 } from "lucide-react";
 import {
   type ServiceInquiry,
@@ -79,19 +74,6 @@ export default function AdminDashboard() {
         variant: "destructive",
         title: "Delete failed",
         description: error.message,
-      });
-    },
-  });
-
-  const updateStatusMutation = useMutation({
-    mutationFn: async ({ type, id, status, notes }: { type: string; id: string; status: string; notes?: string }) => {
-      await apiRequest("PATCH", `/api/admin/data/${type}/${id}/status`, { status, notes });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/data"] });
-      toast({
-        title: "Status updated",
-        description: "The lead status has been successfully updated.",
       });
     },
   });
@@ -146,21 +128,6 @@ export default function AdminDashboard() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-  };
-
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case "new":
-        return <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 text-blue-700 px-2 py-0.5 text-[10px] font-bold uppercase"><AlertCircle className="h-3 w-3" /> New</span>;
-      case "in_progress":
-        return <span className="inline-flex items-center gap-1 rounded-full bg-yellow-100 text-yellow-700 px-2 py-0.5 text-[10px] font-bold uppercase"><Clock3 className="h-3 w-3" /> Active</span>;
-      case "completed":
-        return <span className="inline-flex items-center gap-1 rounded-full bg-green-100 text-green-700 px-2 py-0.5 text-[10px] font-bold uppercase"><CheckCircle2 className="h-3 w-3" /> Won</span>;
-      case "lost":
-        return <span className="inline-flex items-center gap-1 rounded-full bg-red-100 text-red-700 px-2 py-0.5 text-[10px] font-bold uppercase"><XCircle className="h-3 w-3" /> Lost</span>;
-      default:
-        return <span className="inline-flex items-center gap-1 rounded-full bg-muted text-muted-foreground px-2 py-0.5 text-[10px] font-bold uppercase">{status}</span>;
-    }
   };
 
   if (isLoading) {
@@ -372,11 +339,10 @@ export default function AdminDashboard() {
                           <TableRow>
                             <TableHead className="w-[180px] px-6">Client Name</TableHead>
                             <TableHead>Email</TableHead>
-                            <TableHead>Service</TableHead>
-                            <TableHead>Status</TableHead>
-                            <TableHead className="max-w-[200px]">Notes</TableHead>
+                            <TableHead>Selected Service</TableHead>
+                            <TableHead className="max-w-[250px]">Message</TableHead>
                             <TableHead className="text-right px-6">Date</TableHead>
-                            <TableHead className="w-[100px]"></TableHead>
+                            <TableHead className="w-[50px]"></TableHead>
                           </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -389,20 +355,9 @@ export default function AdminDashboard() {
                                   {item.service}
                                 </span>
                               </TableCell>
-                              <TableCell>{getStatusBadge(item.status || "new")}</TableCell>
-                              <TableCell className="max-w-[200px] truncate text-xs italic text-muted-foreground">{item.notes || "No notes..."}</TableCell>
+                              <TableCell className="max-w-[250px] truncate py-4" title={item.message}>{item.message}</TableCell>
                               <TableCell className="text-right text-muted-foreground px-6">{new Date(item.timestamp).toLocaleDateString()}</TableCell>
-                              <TableCell className="px-6 flex items-center gap-1">
-                                <select 
-                                  className="h-8 text-xs border rounded-md bg-background px-2"
-                                  value={item.status || "new"}
-                                  onChange={(e) => updateStatusMutation.mutate({ type: "inquiries", id: item.id, status: e.target.value, notes: item.notes ?? undefined })}
-                                >
-                                  <option value="new">New</option>
-                                  <option value="in_progress">Active</option>
-                                  <option value="completed">Won</option>
-                                  <option value="lost">Lost</option>
-                                </select>
+                              <TableCell className="px-6">
                                 <Button
                                   variant="ghost"
                                   size="icon"
@@ -427,9 +382,8 @@ export default function AdminDashboard() {
                             <TableHead>Email</TableHead>
                             <TableHead>Project Type</TableHead>
                             <TableHead>Budget Range</TableHead>
-                            <TableHead>Status</TableHead>
                             <TableHead className="text-right px-6">Date</TableHead>
-                            <TableHead className="w-[100px]"></TableHead>
+                            <TableHead className="w-[50px]"></TableHead>
                           </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -443,19 +397,8 @@ export default function AdminDashboard() {
                                 </span>
                               </TableCell>
                               <TableCell className="font-bold text-green-600 dark:text-green-400">{item.budget}</TableCell>
-                              <TableCell>{getStatusBadge(item.status || "new")}</TableCell>
                               <TableCell className="text-right text-muted-foreground px-6">{new Date(item.timestamp).toLocaleDateString()}</TableCell>
-                              <TableCell className="px-6 flex items-center gap-1">
-                                <select 
-                                  className="h-8 text-xs border rounded-md bg-background px-2"
-                                  value={item.status || "new"}
-                                  onChange={(e) => updateStatusMutation.mutate({ type: "quotes", id: item.id, status: e.target.value, notes: item.notes ?? undefined })}
-                                >
-                                  <option value="new">New</option>
-                                  <option value="in_progress">Active</option>
-                                  <option value="completed">Won</option>
-                                  <option value="lost">Lost</option>
-                                </select>
+                              <TableCell className="px-6">
                                 <Button
                                   variant="ghost"
                                   size="icon"
