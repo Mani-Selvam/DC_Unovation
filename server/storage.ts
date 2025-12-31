@@ -30,6 +30,10 @@ export interface IStorage {
   getAllContactSubmissions(): Promise<ContactSubmission[]>;
   getAllQuoteRequests(): Promise<QuoteRequest[]>;
 
+  // CRM methods
+  updateServiceInquiryStatus(id: string, status: string, notes?: string): Promise<ServiceInquiry>;
+  updateQuoteRequestStatus(id: string, status: string, notes?: string): Promise<QuoteRequest>;
+
   // Delete methods
   deleteServiceInquiry(id: string): Promise<void>;
   deleteNewsletterSubscription(id: string): Promise<void>;
@@ -89,6 +93,24 @@ export class DatabaseStorage implements IStorage {
 
   async getAllQuoteRequests(): Promise<QuoteRequest[]> {
     return await db.select().from(quoteRequests);
+  }
+
+  async updateServiceInquiryStatus(id: string, status: string, notes?: string): Promise<ServiceInquiry> {
+    const [record] = await db
+      .update(serviceInquiries)
+      .set({ status, notes })
+      .where(eq(serviceInquiries.id, id))
+      .returning();
+    return record;
+  }
+
+  async updateQuoteRequestStatus(id: string, status: string, notes?: string): Promise<QuoteRequest> {
+    const [record] = await db
+      .update(quoteRequests)
+      .set({ status, notes })
+      .where(eq(quoteRequests.id, id))
+      .returning();
+    return record;
   }
 
   async deleteServiceInquiry(id: string): Promise<void> {
