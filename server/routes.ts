@@ -62,6 +62,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin routes
+  app.post("/api/admin/login", async (req, res) => {
+    const { username, password } = req.body;
+    if (username === "admin" && password === "admin123") {
+      res.json({ success: true });
+    } else {
+      res.status(401).json({ error: "Invalid credentials" });
+    }
+  });
+
+  app.get("/api/admin/data", async (_req, res) => {
+    try {
+      const serviceInquiries = await storage.getAllServiceInquiries();
+      const newsletterSubscriptions = await storage.getAllNewsletterSubscriptions();
+      const contactSubmissions = await storage.getAllContactSubmissions();
+      const quoteRequests = await storage.getAllQuoteRequests();
+
+      res.json({
+        serviceInquiries,
+        newsletterSubscriptions,
+        contactSubmissions,
+        quoteRequests,
+      });
+    } catch (error) {
+      console.error("Admin data error:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
   const httpServer = createServer(app);
 
   return httpServer;

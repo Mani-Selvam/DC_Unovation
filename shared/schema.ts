@@ -54,6 +54,14 @@ export const quoteRequests = pgTable("quote_requests", {
     timestamp: timestamp("timestamp").notNull().defaultNow(),
 });
 
+export const admins = pgTable("admins", {
+    id: text("id")
+        .primaryKey()
+        .default(sql`gen_random_uuid()`),
+    username: text("username").notNull().unique(),
+    password: text("password").notNull(),
+});
+
 export const insertServiceInquirySchema = createInsertSchema(
     serviceInquiries
 ).omit({
@@ -82,6 +90,10 @@ export const insertQuoteRequestSchema = createInsertSchema(
     timestamp: true,
 });
 
+export const insertAdminSchema = createInsertSchema(admins).omit({
+    id: true,
+});
+
 export type InsertServiceInquiry = z.infer<typeof insertServiceInquirySchema>;
 export type ServiceInquiry = typeof serviceInquiries.$inferSelect;
 
@@ -98,3 +110,6 @@ export type ContactSubmission = typeof contactSubmissions.$inferSelect;
 
 export type InsertQuoteRequest = z.infer<typeof insertQuoteRequestSchema>;
 export type QuoteRequest = typeof quoteRequests.$inferSelect;
+
+export type Admin = typeof admins.$inferSelect;
+export type InsertAdmin = z.infer<typeof insertAdminSchema>;
