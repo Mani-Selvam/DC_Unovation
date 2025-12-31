@@ -59,6 +59,53 @@ export default function AdminDashboard() {
     setLocation("/admin");
   };
 
+  const exportToCSV = (tab: string) => {
+    let dataToExport: any[] = [];
+    let filename = `dc_unovation_${tab}_${new Date().toISOString().split('T')[0]}.csv`;
+    let headers: string[] = [];
+
+    if (tab === "inquiries") {
+      dataToExport = data?.serviceInquiries || [];
+      headers = ["Name", "Email", "Service", "Message", "Timestamp"];
+    } else if (tab === "quotes") {
+      dataToExport = data?.quoteRequests || [];
+      headers = ["Name", "Email", "Project Type", "Budget", "Timestamp"];
+    } else if (tab === "contact") {
+      dataToExport = data?.contactSubmissions || [];
+      headers = ["Name", "Email", "Phone", "Message", "Timestamp"];
+    } else if (tab === "newsletter") {
+      dataToExport = data?.newsletterSubscriptions || [];
+      headers = ["Email", "Name", "Source", "Timestamp"];
+    }
+
+    if (dataToExport.length === 0) return;
+
+    const csvContent = [
+      headers.join(","),
+      ...dataToExport.map(item => {
+        return headers.map(header => {
+          const key = header.toLowerCase().replace(" ", "") as keyof typeof item;
+          // Simple escaping for CSV
+          let val = String(item[key] || "");
+          if (val.includes(",") || val.includes("\"") || val.includes("\n")) {
+            val = `"${val.replace(/"/g, '""')}"`;
+          }
+          return val;
+        }).join(",");
+      })
+    ].join("\n");
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", filename);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-background">
@@ -258,7 +305,7 @@ export default function AdminDashboard() {
                     <CardTitle className="text-lg">Detailed Report</CardTitle>
                     <CardDescription>Historical data view</CardDescription>
                   </div>
-                  <Button variant="outline" size="sm" className="h-8">Export to CSV</Button>
+                  <Button variant="outline" size="sm" className="h-8" onClick={() => exportToCSV(activeTab)}>Export to CSV</Button>
                 </CardHeader>
                 <CardContent className="p-0">
                   <div className="overflow-x-auto">
