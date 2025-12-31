@@ -13,6 +13,19 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
+import {
+  type ServiceInquiry,
+  type QuoteRequest,
+  type ContactSubmission,
+  type NewsletterSubscription,
+} from "@shared/schema";
+
+interface AdminData {
+  serviceInquiries: ServiceInquiry[];
+  quoteRequests: QuoteRequest[];
+  contactSubmissions: ContactSubmission[];
+  newsletterSubscriptions: NewsletterSubscription[];
+}
 
 export default function AdminDashboard() {
   const [, setLocation] = useLocation();
@@ -23,7 +36,7 @@ export default function AdminDashboard() {
     }
   }, [setLocation]);
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading } = useQuery<AdminData>({
     queryKey: ["/api/admin/data"],
   });
 
