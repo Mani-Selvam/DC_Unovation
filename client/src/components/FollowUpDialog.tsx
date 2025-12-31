@@ -62,7 +62,13 @@ export function FollowUpDialog({ clientId, open, onOpenChange }: FollowUpDialogP
                 <FormItem>
                   <FormLabel>Follow-up Date *</FormLabel>
                   <FormControl>
-                    <Input type="date" {...field} />
+                    <Input 
+                      type="date" 
+                      className="cursor-pointer"
+                      {...field} 
+                      value={field.value ? (field.value instanceof Date ? field.value.toISOString().split('T')[0] : String(field.value)) : ""}
+                      onChange={(e) => field.onChange(e.target.value)}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
