@@ -48,7 +48,7 @@ export default function ProposalForm() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [`/api/crm/clients/${clientId}/proposal`] });
       toast({ title: "Proposal saved!" });
-      navigate(`/crm/clients/${clientId}`);
+      navigate(`/admin/dashboard/crm/clients/${clientId}`);
     },
     onError: () => {
       toast({ title: "Failed to save proposal", variant: "destructive" });

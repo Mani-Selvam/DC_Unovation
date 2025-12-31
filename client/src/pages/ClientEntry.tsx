@@ -36,7 +36,7 @@ export default function ClientEntry() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/crm/clients"] });
       toast({ title: "Client added successfully!" });
-      navigate("/crm");
+      navigate("/admin/dashboard/crm");
     },
     onError: () => {
       toast({ title: "Failed to add client", variant: "destructive" });

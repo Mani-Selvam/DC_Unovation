@@ -22,7 +22,7 @@ export default function CrmDashboard() {
             <h1 className="text-4xl font-bold text-foreground mb-2">CRM Dashboard</h1>
             <p className="text-muted-foreground">Manage your clients and track follow-ups</p>
           </div>
-          <Link href="/crm/clients/new">
+          <Link href="/admin/dashboard/crm/clients/new">
             <Button size="lg" className="gap-2" data-testid="button-add-client">
               <Plus className="w-5 h-5" />
               New Client
@@ -73,7 +73,7 @@ export default function CrmDashboard() {
               <Users className="w-16 h-16 text-muted-foreground mx-auto mb-4 opacity-40" />
               <p className="text-muted-foreground text-lg mb-4">No clients yet</p>
               <p className="text-muted-foreground mb-6">Start building your client list by adding your first client.</p>
-              <Link href="/crm/clients/new">
+              <Link href="/admin/dashboard/crm/clients/new">
                 <Button size="lg" className="gap-2" data-testid="button-add-first-client">
                   <Plus className="w-5 h-5" />
                   Create First Client
@@ -83,7 +83,7 @@ export default function CrmDashboard() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
               {clients.map((client) => (
-                <Link key={client.id} href={`/crm/clients/${client.id}`}>
+                <Link key={client.id} href={`/admin/dashboard/crm/clients/${client.id}`}>
                   <Card className="p-6 hover-elevate h-full bg-white dark:bg-slate-800 cursor-pointer transition-all duration-200">
                     <div className="space-y-4">
                       <div className="flex items-start justify-between">

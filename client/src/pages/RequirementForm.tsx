@@ -48,7 +48,7 @@ export default function RequirementForm() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [`/api/crm/clients/${clientId}/requirement`] });
       toast({ title: "Requirements saved!" });
-      navigate(`/crm/clients/${clientId}`);
+      navigate(`/admin/dashboard/crm/clients/${clientId}`);
     },
     onError: () => {
       toast({ title: "Failed to save requirements", variant: "destructive" });

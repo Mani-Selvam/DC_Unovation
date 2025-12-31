@@ -47,7 +47,7 @@ export default function PaymentForm() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [`/api/crm/clients/${clientId}/payment`] });
       toast({ title: "Payment tracked!" });
-      navigate(`/crm/clients/${clientId}`);
+      navigate(`/admin/dashboard/crm/clients/${clientId}`);
     },
     onError: () => {
       toast({ title: "Failed to save payment", variant: "destructive" });

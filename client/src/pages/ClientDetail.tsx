@@ -39,7 +39,7 @@ export default function ClientDetail() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900 p-8">
       <div className="max-w-5xl mx-auto">
         {/* Back Button */}
-        <Link href="/crm">
+        <Link href="/admin/dashboard/crm">
           <Button variant="ghost" className="mb-6" data-testid="button-back">
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Clients
@@ -170,7 +170,7 @@ export default function ClientDetail() {
         <Card className="p-8">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-bold">Follow-Ups (Most Important)</h2>
-          <Link href={`/crm/clients/${clientId}/follow-up`}>
+          <Link href={`/admin/dashboard/crm/clients/${clientId}/follow-up`}>
             <Button size="sm" data-testid="button-add-followup">
               <Plus className="w-4 h-4 mr-1" />
               New
@@ -198,7 +198,7 @@ export default function ClientDetail() {
       <Card className="p-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-bold">Requirements</h2>
-          <Link href={`/crm/clients/${clientId}/requirement`}>
+          <Link href={`/admin/dashboard/crm/clients/${clientId}/requirement`}>
             <Button size="sm" data-testid="button-add-requirement">
               <Plus className="w-4 h-4 mr-1" />
               New
@@ -221,7 +221,7 @@ export default function ClientDetail() {
       <Card className="p-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-bold">Proposal</h2>
-          <Link href={`/crm/clients/${clientId}/proposal`}>
+          <Link href={`/admin/dashboard/crm/clients/${clientId}/proposal`}>
             <Button size="sm" data-testid="button-add-proposal">
               <Plus className="w-4 h-4 mr-1" />
               New
@@ -246,7 +246,7 @@ export default function ClientDetail() {
       <Card className="p-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-bold">Payment</h2>
-          <Link href={`/crm/clients/${clientId}/payment`}>
+          <Link href={`/admin/dashboard/crm/clients/${clientId}/payment`}>
             <Button size="sm" data-testid="button-add-payment">
               <Plus className="w-4 h-4 mr-1" />
               New
@@ -278,7 +278,7 @@ export default function ClientDetail() {
       <Card className="p-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-bold">Project Status</h2>
-          <Link href={`/crm/clients/${clientId}/project`}>
+          <Link href={`/admin/dashboard/crm/clients/${clientId}/project`}>
             <Button size="sm" data-testid="button-add-project">
               <Plus className="w-4 h-4 mr-1" />
               New

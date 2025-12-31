@@ -47,7 +47,7 @@ export default function ProjectForm() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [`/api/crm/clients/${clientId}/project`] });
       toast({ title: "Project updated!" });
-      navigate(`/crm/clients/${clientId}`);
+      navigate(`/admin/dashboard/crm/clients/${clientId}`);
     },
     onError: () => {
       toast({ title: "Failed to update project", variant: "destructive" });

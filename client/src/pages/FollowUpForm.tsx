@@ -40,7 +40,7 @@ export default function FollowUpForm() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [`/api/crm/clients/${clientId}/follow-ups`] });
       toast({ title: "Follow-up recorded!" });
-      navigate(`/crm/clients/${clientId}`);
+      navigate(`/admin/dashboard/crm/clients/${clientId}`);
     },
     onError: () => {
       toast({ title: "Failed to save follow-up", variant: "destructive" });
