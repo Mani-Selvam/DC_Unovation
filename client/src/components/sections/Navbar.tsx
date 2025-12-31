@@ -20,10 +20,7 @@ export function Navbar({ onCTAClick }: NavbarProps) {
                 "hero",
                 "about",
                 "services",
-                "portfolio",
                 "process",
-                "blog",
-                "careers",
                 "contact",
             ];
             const scrollPosition = window.scrollY + 100;

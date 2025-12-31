@@ -1,10 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Mail, Phone, MapPin, Send } from "lucide-react";
-import { getStoredUser } from "@/lib/googleAuth";
 
 interface ContactProps {
     onSubmit: (data: {
@@ -23,17 +22,6 @@ export function Contact({ onSubmit }: ContactProps) {
         message: "",
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
-
-    useEffect(() => {
-        const user = getStoredUser();
-        if (user) {
-            setFormData((prev) => ({
-                ...prev,
-                name: user.name,
-                email: user.email,
-            }));
-        }
-    }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();

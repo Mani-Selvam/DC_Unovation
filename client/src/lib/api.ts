@@ -1,22 +1,3 @@
-export async function submitLeadTracking(data: {
-  page: string;
-  action: string;
-  name?: string;
-  email?: string;
-}) {
-  const response = await fetch("/api/forms/lead-tracking", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
-  });
-
-  if (!response.ok) {
-    throw new Error("Failed to submit lead tracking");
-  }
-
-  return response.json();
-}
-
 export async function submitServiceInquiry(data: {
   name: string;
   email: string;
@@ -32,46 +13,6 @@ export async function submitServiceInquiry(data: {
 
   if (!response.ok) {
     throw new Error("Failed to submit service inquiry");
-  }
-
-  return response.json();
-}
-
-export async function submitProjectInterest(data: {
-  project: string;
-  name: string;
-  email: string;
-  message?: string;
-  page: string;
-}) {
-  const response = await fetch("/api/forms/project-interest", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
-  });
-
-  if (!response.ok) {
-    throw new Error("Failed to submit project interest");
-  }
-
-  return response.json();
-}
-
-export async function submitJobApplication(data: {
-  name: string;
-  email: string;
-  phone: string;
-  role: string;
-  message: string;
-}) {
-  const response = await fetch("/api/forms/job-application", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
-  });
-
-  if (!response.ok) {
-    throw new Error("Failed to submit job application");
   }
 
   return response.json();
@@ -106,6 +47,27 @@ export async function submitNewsletterFooter(email: string) {
 
   if (!response.ok) {
     throw new Error("Failed to subscribe to newsletter");
+  }
+
+  return response.json();
+}
+
+export async function submitQuote(data: {
+  name: string;
+  email: string;
+  projectType: string;
+  budget: string;
+  message: string;
+  page: string;
+}) {
+  const response = await fetch("/api/forms/quote", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to submit quote request");
   }
 
   return response.json();

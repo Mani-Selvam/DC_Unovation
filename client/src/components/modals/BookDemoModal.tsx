@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -27,7 +26,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { getStoredUser } from "@/lib/googleAuth";
 
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -63,20 +61,6 @@ export function BookDemoModal({
       message: "",
     },
   });
-
-  useEffect(() => {
-    if (open) {
-      const user = getStoredUser();
-      if (user) {
-        form.reset({
-          name: user.name,
-          email: user.email,
-          service: form.getValues("service") || "",
-          message: form.getValues("message") || "",
-        });
-      }
-    }
-  }, [open, form]);
 
   const handleSubmit = async (data: FormValues) => {
     await onSubmit(data);
@@ -152,12 +136,12 @@ export function BookDemoModal({
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="web-development">Web Development</SelectItem>
-                      <SelectItem value="app-development">App Development</SelectItem>
-                      <SelectItem value="ui-ux-design">UI/UX Design</SelectItem>
-                      <SelectItem value="automation">Automation</SelectItem>
-                      <SelectItem value="branding">Branding</SelectItem>
-                      <SelectItem value="digital-marketing">Digital Marketing</SelectItem>
+                      <SelectItem value="web-development">Website Development</SelectItem>
+                      <SelectItem value="custom-apps">Custom Web Applications</SelectItem>
+                      <SelectItem value="web-hosting">Web Hosting Solutions</SelectItem>
+                      <SelectItem value="maintenance">Website Maintenance & Support</SelectItem>
+                      <SelectItem value="optimization">Performance & Optimization</SelectItem>
+                      <SelectItem value="tailored-solutions">Tailored Digital Solutions</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
