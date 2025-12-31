@@ -8,8 +8,7 @@ import dotenv from "dotenv";
 // Load environment variables
 dotenv.config();
 neonConfig.webSocketConstructor = ws;
-// Disable pooling temporarily to avoid ErrorEvent TypeError in @neondatabase/serverless
-neonConfig.usePool = false;
+// (neonConfig as any).usePool = false;
 
 if (!process.env.DATABASE_URL) {
     throw new Error(
@@ -19,7 +18,8 @@ if (!process.env.DATABASE_URL) {
 
 export const pool = new Pool({ 
   connectionString: process.env.DATABASE_URL,
-  connectionTimeoutMillis: 10000, // 10 seconds timeout
-  max: 10, // Max clients in pool
+  connectionTimeoutMillis: 15000, // 15 seconds timeout
+  max: 20, // Increased max clients
+  idleTimeoutMillis: 30000,
 });
 export const db = drizzle({ client: pool, schema });
