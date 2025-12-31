@@ -63,12 +63,9 @@ export function Navbar({ onCTAClick }: NavbarProps) {
     };
 
     const navLinks = [
-        { label: "About", href: "about" },
         { label: "Services", href: "services" },
-        { label: "Portfolio", href: "portfolio" },
         { label: "Process", href: "process" },
-        { label: "Blog", href: "blog" },
-        { label: "Careers", href: "careers" },
+        { label: "About", href: "about" },
     ];
 
     return (
@@ -76,7 +73,7 @@ export function Navbar({ onCTAClick }: NavbarProps) {
             className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
                 isScrolled
                     ? "bg-slate-900/90 backdrop-blur-xl border-b border-purple-500/20 shadow-lg shadow-purple-500/10"
-                    : "bg-transparent"
+                    : "bg-slate-900/100 backdrop-blur-xl border-b border-teal-900/20 shadow-lg shadow-teal-500/10 "
             }`}
             data-testid="navbar">
             <div className="max-w-7xl mx-auto px-6 lg:px-8">
@@ -114,6 +111,13 @@ export function Navbar({ onCTAClick }: NavbarProps) {
                     </div>
 
                     <div className="hidden lg:flex items-center gap-3">
+                        <Button
+                            variant="ghost"
+                            onClick={() => scrollToSection("pricing")}
+                            className="text-gray-300 hover:text-white hover:bg-white/10 transition-all duration-300"
+                            data-testid="button-contact-nav">
+                            Pricing
+                        </Button>{" "}
                         <Button
                             variant="ghost"
                             onClick={() => scrollToSection("contact")}
