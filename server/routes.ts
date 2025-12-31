@@ -359,6 +359,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Convert inquiry to CRM client
+  app.post("/api/admin/convert-inquiry-to-client", async (req, res) => {
+    try {
+      const { name, email, phone, company, serviceNeeded, source, inquiryId } = req.body;
+      
+      // Validate required fields
+      if (!name || !email || !serviceNeeded) {
+        return res.status(400).json({ error: "Missing required fields: name, email, serviceNeeded" });
+      }
+
+      // Create client from inquiry
+      const clientData = insertClientSchema.parse({
+        name,
+        email: email || "",
+        phone: phone || "",
+        company: company || "",
+        serviceNeeded,
+        source: source || "Inquiry",
+      });
+
+      const client = await storage.createClient(clientData);
+
+      // Delete the inquiry after successful conversion
+      if (inquiryId) {
+        await storage.deleteServiceInquiry(inquiryId);
+      }
+
+      res.json({ success: true, client });
+    } catch (error) {
+      console.error("Convert inquiry error:", error);
+      res.status(400).json({ error: "Failed to convert inquiry to client" });
+    }
+  });
+
   const httpServer = createServer(app);
 
   return httpServer;

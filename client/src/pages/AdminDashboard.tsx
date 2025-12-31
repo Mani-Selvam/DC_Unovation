@@ -25,7 +25,8 @@ import {
   Clock,
   User,
   ExternalLink,
-  Trash2
+  Trash2,
+  Plus
 } from "lucide-react";
 import { CrmSidebar } from "@/components/CrmSidebar";
 import {
@@ -90,6 +91,35 @@ export default function AdminDashboard(props: any) {
         variant: "destructive",
         title: "Delete failed",
         description: error.message,
+      });
+    },
+  });
+
+  const convertToClientMutation = useMutation({
+    mutationFn: async (inquiry: ServiceInquiry) => {
+      await apiRequest("POST", `/api/admin/convert-inquiry-to-client`, {
+        name: inquiry.name,
+        email: inquiry.email,
+        phone: "",
+        company: "",
+        serviceNeeded: inquiry.service,
+        source: "Inquiry",
+        inquiryId: inquiry.id,
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/data"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/crm/clients"] });
+      toast({
+        title: "Client created!",
+        description: "Inquiry has been converted to a CRM client.",
+      });
+    },
+    onError: (error) => {
+      toast({
+        variant: "destructive",
+        title: "Conversion failed",
+        description: error.message || "Could not convert inquiry to client",
       });
     },
   });
@@ -303,7 +333,7 @@ export default function AdminDashboard(props: any) {
                             <TableHead>Selected Service</TableHead>
                             <TableHead className="max-w-[250px]">Message</TableHead>
                             <TableHead className="text-right px-6">Date</TableHead>
-                            <TableHead className="w-[50px]"></TableHead>
+                            <TableHead className="w-[120px]"></TableHead>
                           </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -318,7 +348,18 @@ export default function AdminDashboard(props: any) {
                               </TableCell>
                               <TableCell className="max-w-[250px] truncate py-4" title={item.message}>{item.message}</TableCell>
                               <TableCell className="text-right text-muted-foreground px-6">{new Date(item.timestamp).toLocaleDateString()}</TableCell>
-                              <TableCell className="px-6">
+                              <TableCell className="px-6 flex items-center gap-1">
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  className="h-8 text-xs"
+                                  onClick={() => convertToClientMutation.mutate(item)}
+                                  disabled={convertToClientMutation.isPending}
+                                  data-testid="button-convert-inquiry"
+                                >
+                                  <Plus className="h-3 w-3 mr-1" />
+                                  Add CRM
+                                </Button>
                                 <Button
                                   variant="ghost"
                                   size="icon"
