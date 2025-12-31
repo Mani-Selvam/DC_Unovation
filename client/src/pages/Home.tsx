@@ -180,10 +180,10 @@ export default function Home() {
             />
             <Services />
             <Process />
-            {/* <Portfolio onProjectInterest={handleProjectInterest} /> */}
-            <About />
             <Pricing />
+            <About />
             {/* <Metrics /> */}
+            {/* <Portfolio onProjectInterest={handleProjectInterest} /> */}
             {/* <Blog /> */}
             {/* <Careers onApplyClick={() => setJobApplicationOpen(true)} /> */}
             <Contact onSubmit={handleContactSubmit} />
