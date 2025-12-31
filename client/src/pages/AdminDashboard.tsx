@@ -396,7 +396,7 @@ export default function AdminDashboard() {
                                 <select 
                                   className="h-8 text-xs border rounded-md bg-background px-2"
                                   value={item.status || "new"}
-                                  onChange={(e) => updateStatusMutation.mutate({ type: "inquiries", id: item.id, status: e.target.value, notes: item.notes })}
+                                  onChange={(e) => updateStatusMutation.mutate({ type: "inquiries", id: item.id, status: e.target.value, notes: item.notes ?? undefined })}
                                 >
                                   <option value="new">New</option>
                                   <option value="in_progress">Active</option>
@@ -449,7 +449,7 @@ export default function AdminDashboard() {
                                 <select 
                                   className="h-8 text-xs border rounded-md bg-background px-2"
                                   value={item.status || "new"}
-                                  onChange={(e) => updateStatusMutation.mutate({ type: "quotes", id: item.id, status: e.target.value, notes: item.notes })}
+                                  onChange={(e) => updateStatusMutation.mutate({ type: "quotes", id: item.id, status: e.target.value, notes: item.notes ?? undefined })}
                                 >
                                   <option value="new">New</option>
                                   <option value="in_progress">Active</option>
