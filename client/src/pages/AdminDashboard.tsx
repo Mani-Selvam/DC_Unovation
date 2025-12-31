@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import {
   Table,
   TableBody,
@@ -24,7 +24,8 @@ import {
   TrendingUp,
   Clock,
   User,
-  ExternalLink
+  ExternalLink,
+  Trash2
 } from "lucide-react";
 import {
   type ServiceInquiry,
@@ -32,6 +33,8 @@ import {
   type ContactSubmission,
   type NewsletterSubscription,
 } from "@shared/schema";
+import { apiRequest, queryClient } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 
 interface AdminData {
   serviceInquiries: ServiceInquiry[];
@@ -43,6 +46,7 @@ interface AdminData {
 export default function AdminDashboard() {
   const [, setLocation] = useLocation();
   const [activeTab, setActiveTab] = useState("overview");
+  const { toast } = useToast();
 
   useEffect(() => {
     if (localStorage.getItem("admin_auth") !== "true") {
@@ -52,6 +56,26 @@ export default function AdminDashboard() {
 
   const { data, isLoading } = useQuery<AdminData>({
     queryKey: ["/api/admin/data"],
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: async ({ type, id }: { type: string; id: string }) => {
+      await apiRequest("DELETE", `/api/admin/data/${type}/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/data"] });
+      toast({
+        title: "Record deleted",
+        description: "The record has been permanently removed.",
+      });
+    },
+    onError: (error) => {
+      toast({
+        variant: "destructive",
+        title: "Delete failed",
+        description: error.message,
+      });
+    },
   });
 
   const handleLogout = () => {
@@ -318,6 +342,7 @@ export default function AdminDashboard() {
                             <TableHead>Selected Service</TableHead>
                             <TableHead className="max-w-[250px]">Message</TableHead>
                             <TableHead className="text-right px-6">Date</TableHead>
+                            <TableHead className="w-[50px]"></TableHead>
                           </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -332,6 +357,17 @@ export default function AdminDashboard() {
                               </TableCell>
                               <TableCell className="max-w-[250px] truncate py-4" title={item.message}>{item.message}</TableCell>
                               <TableCell className="text-right text-muted-foreground px-6">{new Date(item.timestamp).toLocaleDateString()}</TableCell>
+                              <TableCell className="px-6">
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                                  onClick={() => deleteMutation.mutate({ type: "inquiries", id: item.id })}
+                                  disabled={deleteMutation.isPending}
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </TableCell>
                             </TableRow>
                           ))}
                         </TableBody>
@@ -347,6 +383,7 @@ export default function AdminDashboard() {
                             <TableHead>Project Type</TableHead>
                             <TableHead>Budget Range</TableHead>
                             <TableHead className="text-right px-6">Date</TableHead>
+                            <TableHead className="w-[50px]"></TableHead>
                           </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -361,6 +398,17 @@ export default function AdminDashboard() {
                               </TableCell>
                               <TableCell className="font-bold text-green-600 dark:text-green-400">{item.budget}</TableCell>
                               <TableCell className="text-right text-muted-foreground px-6">{new Date(item.timestamp).toLocaleDateString()}</TableCell>
+                              <TableCell className="px-6">
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                                  onClick={() => deleteMutation.mutate({ type: "quotes", id: item.id })}
+                                  disabled={deleteMutation.isPending}
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </TableCell>
                             </TableRow>
                           ))}
                         </TableBody>
@@ -375,6 +423,7 @@ export default function AdminDashboard() {
                             <TableHead>Contact Info</TableHead>
                             <TableHead className="max-w-[300px]">Message Preview</TableHead>
                             <TableHead className="text-right px-6">Received On</TableHead>
+                            <TableHead className="w-[50px]"></TableHead>
                           </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -389,6 +438,17 @@ export default function AdminDashboard() {
                               </TableCell>
                               <TableCell className="max-w-[300px] truncate py-4" title={item.message}>{item.message}</TableCell>
                               <TableCell className="text-right text-muted-foreground px-6">{new Date(item.timestamp).toLocaleDateString()}</TableCell>
+                              <TableCell className="px-6">
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                                  onClick={() => deleteMutation.mutate({ type: "contact", id: item.id })}
+                                  disabled={deleteMutation.isPending}
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </TableCell>
                             </TableRow>
                           ))}
                         </TableBody>
@@ -403,6 +463,7 @@ export default function AdminDashboard() {
                             <TableHead>Name</TableHead>
                             <TableHead>Signup Source</TableHead>
                             <TableHead className="text-right px-6">Date Joined</TableHead>
+                            <TableHead className="w-[50px]"></TableHead>
                           </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -416,6 +477,17 @@ export default function AdminDashboard() {
                                 </span>
                               </TableCell>
                               <TableCell className="text-right text-muted-foreground px-6">{new Date(item.timestamp).toLocaleDateString()}</TableCell>
+                              <TableCell className="px-6">
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                                  onClick={() => deleteMutation.mutate({ type: "newsletter", id: item.id })}
+                                  disabled={deleteMutation.isPending}
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </TableCell>
                             </TableRow>
                           ))}
                         </TableBody>

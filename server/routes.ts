@@ -91,6 +91,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.delete("/api/admin/data/:type/:id", async (req, res) => {
+    try {
+      const { type, id } = req.params;
+      
+      switch (type) {
+        case "inquiries":
+          await storage.deleteServiceInquiry(id);
+          break;
+        case "newsletter":
+          await storage.deleteNewsletterSubscription(id);
+          break;
+        case "contact":
+          await storage.deleteContactSubmission(id);
+          break;
+        case "quotes":
+          await storage.deleteQuoteRequest(id);
+          break;
+        default:
+          return res.status(400).json({ error: "Invalid record type" });
+      }
+
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Admin delete error:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
   const httpServer = createServer(app);
 
   return httpServer;

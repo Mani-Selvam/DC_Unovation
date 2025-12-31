@@ -29,6 +29,12 @@ export interface IStorage {
   getAllNewsletterSubscriptions(): Promise<NewsletterSubscription[]>;
   getAllContactSubmissions(): Promise<ContactSubmission[]>;
   getAllQuoteRequests(): Promise<QuoteRequest[]>;
+
+  // Delete methods
+  deleteServiceInquiry(id: string): Promise<void>;
+  deleteNewsletterSubscription(id: string): Promise<void>;
+  deleteContactSubmission(id: string): Promise<void>;
+  deleteQuoteRequest(id: string): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -83,6 +89,22 @@ export class DatabaseStorage implements IStorage {
 
   async getAllQuoteRequests(): Promise<QuoteRequest[]> {
     return await db.select().from(quoteRequests);
+  }
+
+  async deleteServiceInquiry(id: string): Promise<void> {
+    await db.delete(serviceInquiries).where(eq(serviceInquiries.id, id));
+  }
+
+  async deleteNewsletterSubscription(id: string): Promise<void> {
+    await db.delete(newsletterSubscriptions).where(eq(newsletterSubscriptions.id, id));
+  }
+
+  async deleteContactSubmission(id: string): Promise<void> {
+    await db.delete(contactSubmissions).where(eq(contactSubmissions.id, id));
+  }
+
+  async deleteQuoteRequest(id: string): Promise<void> {
+    await db.delete(quoteRequests).where(eq(quoteRequests.id, id));
   }
 }
 
