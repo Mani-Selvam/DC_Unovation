@@ -316,14 +316,18 @@ export default function ClientDetail() {
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="p-4 rounded-lg border border-gray-200 dark:border-gray-800 bg-gradient-to-br from-gray-50 to-gray-100/50 dark:from-gray-950 dark:to-gray-900/50">
-                <p className="text-xs text-muted-foreground uppercase tracking-wide font-medium mb-1">Proposed Price</p>
-                <p className="text-2xl font-bold text-foreground">₹{proposal.price.toLocaleString('en-IN')}</p>
-              </div>
-              <div className="p-4 rounded-lg border border-gray-200 dark:border-gray-800 bg-gradient-to-br from-gray-50 to-gray-100/50 dark:from-gray-950 dark:to-gray-900/50">
-                <p className="text-xs text-muted-foreground uppercase tracking-wide font-medium mb-1">Estimated Timeline</p>
-                <p className="text-lg font-semibold text-foreground">{proposal.timeline}</p>
-              </div>
+              {proposal.price && (
+                <div className="p-4 rounded-lg border border-gray-200 dark:border-gray-800 bg-gradient-to-br from-gray-50 to-gray-100/50 dark:from-gray-950 dark:to-gray-900/50">
+                  <p className="text-xs text-muted-foreground uppercase tracking-wide font-medium mb-1">Proposed Price</p>
+                  <p className="text-2xl font-bold text-foreground">₹{(proposal.price || 0).toLocaleString('en-IN')}</p>
+                </div>
+              )}
+              {proposal.timeline && (
+                <div className="p-4 rounded-lg border border-gray-200 dark:border-gray-800 bg-gradient-to-br from-gray-50 to-gray-100/50 dark:from-gray-950 dark:to-gray-900/50">
+                  <p className="text-xs text-muted-foreground uppercase tracking-wide font-medium mb-1">Estimated Timeline</p>
+                  <p className="text-lg font-semibold text-foreground">{proposal.timeline}</p>
+                </div>
+              )}
             </div>
           </div>
         ) : (
@@ -358,19 +362,19 @@ export default function ClientDetail() {
               {/* Total Amount */}
               <div className="p-5 rounded-lg border-2 border-blue-200 dark:border-blue-800 bg-gradient-to-br from-blue-50 to-blue-100/30 dark:from-blue-950 dark:to-blue-900/30">
                 <p className="text-xs text-muted-foreground uppercase tracking-wide font-medium mb-2">Total Amount</p>
-                <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">₹{payment.totalAmount.toLocaleString('en-IN')}</p>
+                <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">₹{(payment.totalAmount || 0).toLocaleString('en-IN')}</p>
               </div>
 
               {/* Advance Paid */}
               <div className="p-5 rounded-lg border-2 border-green-200 dark:border-green-800 bg-gradient-to-br from-green-50 to-green-100/30 dark:from-green-950 dark:to-green-900/30">
                 <p className="text-xs text-muted-foreground uppercase tracking-wide font-medium mb-2">Advance Paid</p>
-                <p className="text-2xl font-bold text-green-600 dark:text-green-400">₹{payment.advancePaid.toLocaleString('en-IN')}</p>
+                <p className="text-2xl font-bold text-green-600 dark:text-green-400">₹{(payment.advancePaid || 0).toLocaleString('en-IN')}</p>
               </div>
 
               {/* Balance Remaining */}
               <div className="p-5 rounded-lg border-2 border-orange-200 dark:border-orange-800 bg-gradient-to-br from-orange-50 to-orange-100/30 dark:from-orange-950 dark:to-orange-900/30">
                 <p className="text-xs text-muted-foreground uppercase tracking-wide font-medium mb-2">Balance Due</p>
-                <p className="text-2xl font-bold text-orange-600 dark:text-orange-400">₹{payment.balanceAmount.toLocaleString('en-IN')}</p>
+                <p className="text-2xl font-bold text-orange-600 dark:text-orange-400">₹{(payment.balanceAmount || 0).toLocaleString('en-IN')}</p>
               </div>
             </div>
 
