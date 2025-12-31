@@ -49,6 +49,7 @@ export default function AdminDashboard(props: any) {
   const defaultTab = props.defaultTab;
   const [, setLocation] = useLocation();
   const [activeTab, setActiveTab] = useState(defaultTab || "overview");
+  const [convertedInquiries, setConvertedInquiries] = useState<Set<string>>(new Set());
   const { toast } = useToast();
 
   useEffect(() => {
@@ -107,12 +108,18 @@ export default function AdminDashboard(props: any) {
         inquiryId: inquiry.id,
       });
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/data"] });
+    onSuccess: (_, inquiry) => {
+      // Mark inquiry as converted but keep it visible
+      setConvertedInquiries(prev => {
+        const newSet = new Set(prev);
+        newSet.add(inquiry.id);
+        return newSet;
+      });
+      // Refresh CRM clients list
       queryClient.invalidateQueries({ queryKey: ["/api/crm/clients"] });
       toast({
-        title: "Client created!",
-        description: "Inquiry has been converted to a CRM client.",
+        title: "Success!",
+        description: "Inquiry has been converted to a CRM client. You can now delete this inquiry or keep it for reference.",
       });
     },
     onError: (error) => {
@@ -350,15 +357,15 @@ export default function AdminDashboard(props: any) {
                               <TableCell className="text-right text-muted-foreground px-6">{new Date(item.timestamp).toLocaleDateString()}</TableCell>
                               <TableCell className="px-6 flex items-center gap-1">
                                 <Button
-                                  variant="outline"
+                                  variant={convertedInquiries.has(item.id) ? "secondary" : "outline"}
                                   size="sm"
                                   className="h-8 text-xs"
                                   onClick={() => convertToClientMutation.mutate(item)}
-                                  disabled={convertToClientMutation.isPending}
+                                  disabled={convertToClientMutation.isPending || convertedInquiries.has(item.id)}
                                   data-testid="button-convert-inquiry"
                                 >
                                   <Plus className="h-3 w-3 mr-1" />
-                                  Add CRM
+                                  {convertedInquiries.has(item.id) ? "✓ Converted" : "Add CRM"}
                                 </Button>
                                 <Button
                                   variant="ghost"
@@ -366,6 +373,7 @@ export default function AdminDashboard(props: any) {
                                   className="h-8 w-8 text-muted-foreground hover:text-destructive"
                                   onClick={() => deleteMutation.mutate({ type: "inquiries", id: item.id })}
                                   disabled={deleteMutation.isPending}
+                                  data-testid="button-delete-inquiry"
                                 >
                                   <Trash2 className="h-4 w-4" />
                                 </Button>
