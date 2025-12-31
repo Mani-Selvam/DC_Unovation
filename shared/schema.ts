@@ -16,6 +16,8 @@ export const serviceInquiries = pgTable("service_inquiries", {
     service: text("service").notNull(),
     message: text("message").notNull(),
     page: text("page").notNull(),
+    status: text("status").notNull().default("new"),
+    notes: text("notes"),
     timestamp: timestamp("timestamp").notNull().defaultNow(),
 });
 
@@ -51,6 +53,8 @@ export const quoteRequests = pgTable("quote_requests", {
     budget: text("budget").notNull(),
     message: text("message").notNull(),
     page: text("page").notNull(),
+    status: text("status").notNull().default("new"),
+    notes: text("notes"),
     timestamp: timestamp("timestamp").notNull().defaultNow(),
 });
 
@@ -67,6 +71,8 @@ export const insertServiceInquirySchema = createInsertSchema(
 ).omit({
     id: true,
     timestamp: true,
+    status: true,
+    notes: true,
 });
 
 export const insertNewsletterSubscriptionSchema = createInsertSchema(
@@ -88,6 +94,8 @@ export const insertQuoteRequestSchema = createInsertSchema(
 ).omit({
     id: true,
     timestamp: true,
+    status: true,
+    notes: true,
 });
 
 export const insertAdminSchema = createInsertSchema(admins).omit({
