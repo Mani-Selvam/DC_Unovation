@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Navbar } from "@/components/sections/Navbar";
 import { Hero } from "@/components/sections/Hero";
 import { About } from "@/components/sections/About";
@@ -9,9 +9,7 @@ import Testimonials from "@/components/sections/Testimonials";
 import { Contact } from "@/components/sections/Contact";
 import { Footer } from "@/components/sections/Footer";
 import { BookDemoModal } from "@/components/modals/BookDemoModal";
-import { GoogleLoginButton } from "@/components/GoogleLoginButton";
 import { useToast } from "@/hooks/use-toast";
-import { getStoredUser, type GoogleUser } from "@/lib/googleAuth";
 import {
     submitServiceInquiry,
     submitContact,
@@ -21,11 +19,6 @@ import {
 export default function Home() {
     const { toast } = useToast();
     const [bookDemoOpen, setBookDemoOpen] = useState(false);
-    const [currentUser, setCurrentUser] = useState<GoogleUser | null>(null);
-
-    useEffect(() => {
-        setCurrentUser(getStoredUser());
-    }, []);
 
     const handleBookDemo = async (data: {
         name: string;
@@ -101,12 +94,6 @@ export default function Home() {
         <div className="min-h-screen">
             <Navbar onCTAClick={() => setBookDemoOpen(true)} />
 
-            {currentUser && (
-                <div className="fixed top-20 right-6 z-40">
-                    <GoogleLoginButton onUserChange={setCurrentUser} />
-                </div>
-            )}
-
             <Hero
                 onBookDemo={() => setBookDemoOpen(true)}
                 onGetQuote={handleGetQuote}
@@ -118,17 +105,6 @@ export default function Home() {
             <Contact onSubmit={handleContactSubmit} />
             <Testimonials />
             <Footer onNewsletterSubmit={handleNewsletterSubmit} />
-
-            {!currentUser && (
-                <div className="fixed bottom-6 right-6 z-40 max-w-xs">
-                    <div className="bg-card border border-card-border rounded-xl shadow-xl p-4">
-                        <p className="text-sm text-muted-foreground mb-3">
-                            Sign in to autofill forms with your info
-                        </p>
-                        <GoogleLoginButton onUserChange={setCurrentUser} />
-                    </div>
-                </div>
-            )}
 
             <BookDemoModal
                 open={bookDemoOpen}
