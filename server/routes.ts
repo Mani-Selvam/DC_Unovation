@@ -91,44 +91,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/admin/leads", async (req, res) => {
-    try {
-      const result = insertLeadSchema.safeParse(req.body);
-      if (!result.success) {
-        return res.status(400).json({ error: result.error.message });
-      }
-      const lead = await storage.createLead(result.data);
-      res.status(201).json(lead);
-    } catch (error) {
-      console.error("Create lead error:", error);
-      res.status(500).json({ error: "Internal server error" });
-    }
-  });
-
-  app.patch("/api/admin/data/:type/:id/status", async (req, res) => {
-    try {
-      const { type, id } = req.params;
-      const { status, notes } = req.body;
-
-      let record;
-      switch (type) {
-        case "inquiries":
-          record = await storage.updateServiceInquiryStatus(id, status, notes);
-          break;
-        case "quotes":
-          record = await storage.updateQuoteRequestStatus(id, status, notes);
-          break;
-        default:
-          return res.status(400).json({ error: "Invalid record type for status update" });
-      }
-
-      res.json({ success: true, record });
-    } catch (error) {
-      console.error("Admin status update error:", error);
-      res.status(500).json({ error: "Internal server error" });
-    }
-  });
-
   app.delete("/api/admin/data/:type/:id", async (req, res) => {
     try {
       const { type, id } = req.params;
