@@ -7,6 +7,9 @@ import Home from "@/pages/Home";
 import AdminLogin from "@/pages/AdminLogin";
 import AdminDashboard from "@/pages/AdminDashboard";
 import CrmDashboard from "@/pages/CrmDashboard";
+import CrmSettings from "@/pages/CrmSettings";
+import CrmReports from "@/pages/CrmReports";
+import CrmAdmin from "@/pages/CrmAdmin";
 import ClientEntry from "@/pages/ClientEntry";
 import FollowUpForm from "@/pages/FollowUpForm";
 import RequirementForm from "@/pages/RequirementForm";
@@ -25,6 +28,9 @@ function Router() {
       
       {/* CRM Routes - Integrated under Admin Dashboard */}
       <Route path="/admin/dashboard/crm" component={CrmDashboard} />
+      <Route path="/admin/dashboard/crm/settings" component={CrmSettings} />
+      <Route path="/admin/dashboard/crm/reports" component={CrmReports} />
+      <Route path="/admin/dashboard/crm/admin" component={CrmAdmin} />
       <Route path="/admin/dashboard/crm/clients/new" component={ClientEntry} />
       <Route path="/admin/dashboard/crm/clients/:clientId" component={ClientDetail} />
       <Route path="/admin/dashboard/crm/clients/:clientId/follow-up" component={FollowUpForm} />
