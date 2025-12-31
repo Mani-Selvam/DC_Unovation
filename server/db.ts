@@ -8,7 +8,6 @@ import dotenv from "dotenv";
 // Load environment variables
 dotenv.config();
 neonConfig.webSocketConstructor = ws;
-// (neonConfig as any).usePool = false;
 
 if (!process.env.DATABASE_URL) {
     throw new Error(
@@ -16,10 +15,5 @@ if (!process.env.DATABASE_URL) {
     );
 }
 
-export const pool = new Pool({ 
-  connectionString: process.env.DATABASE_URL,
-  connectionTimeoutMillis: 15000, // 15 seconds timeout
-  max: 20, // Increased max clients
-  idleTimeoutMillis: 30000,
-});
+export const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 export const db = drizzle({ client: pool, schema });
