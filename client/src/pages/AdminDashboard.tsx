@@ -12,7 +12,20 @@ import {
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { Loader2, LayoutDashboard, MessageSquare, FileText, Mail, Quote, LogOut } from "lucide-react";
+import { 
+  Loader2, 
+  LayoutDashboard, 
+  MessageSquare, 
+  FileText, 
+  Mail, 
+  Quote, 
+  LogOut,
+  ChevronRight,
+  TrendingUp,
+  Clock,
+  User,
+  ExternalLink
+} from "lucide-react";
 import {
   type ServiceInquiry,
   type QuoteRequest,
@@ -29,6 +42,7 @@ interface AdminData {
 
 export default function AdminDashboard() {
   const [, setLocation] = useLocation();
+  const [activeTab, setActiveTab] = useState("overview");
 
   useEffect(() => {
     if (localStorage.getItem("admin_auth") !== "true") {
@@ -47,241 +61,333 @@ export default function AdminDashboard() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      <div className="flex items-center justify-center min-h-screen bg-background">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="h-10 w-10 animate-spin text-primary" />
+          <p className="text-sm text-muted-foreground animate-pulse">Loading dashboard data...</p>
+        </div>
       </div>
     );
   }
 
   const stats = [
-    { label: "Total Inquiries", value: data?.serviceInquiries.length || 0, icon: MessageSquare, color: "text-blue-500" },
-    { label: "Quote Requests", value: data?.quoteRequests.length || 0, icon: Quote, color: "text-green-500" },
-    { label: "Contact Forms", value: data?.contactSubmissions.length || 0, icon: FileText, color: "text-purple-500" },
-    { label: "Subscribers", value: data?.newsletterSubscriptions.length || 0, icon: Mail, color: "text-orange-500" },
+    { label: "Total Inquiries", value: data?.serviceInquiries.length || 0, icon: MessageSquare, color: "text-blue-500", bg: "bg-blue-500/10" },
+    { label: "Quote Requests", value: data?.quoteRequests.length || 0, icon: Quote, color: "text-green-500", bg: "bg-green-500/10" },
+    { label: "Contact Forms", value: data?.contactSubmissions.length || 0, icon: FileText, color: "text-purple-500", bg: "bg-purple-500/10" },
+    { label: "Subscribers", value: data?.newsletterSubscriptions.length || 0, icon: Mail, color: "text-orange-500", bg: "bg-orange-500/10" },
   ];
 
+  const recentActivity = [
+    ...(data?.serviceInquiries || []).map(i => ({ ...i, type: "Inquiry", icon: MessageSquare, color: "text-blue-500" })),
+    ...(data?.quoteRequests || []).map(i => ({ ...i, type: "Quote", icon: Quote, color: "text-green-500" })),
+  ].sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()).slice(0, 5);
+
   return (
-    <div className="min-h-screen bg-muted/30">
-      <nav className="border-b bg-background sticky top-0 z-10">
-        <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="bg-primary rounded-md p-1.5">
+    <div className="min-h-screen bg-muted/20 flex">
+      {/* Sidebar */}
+      <aside className="w-64 border-r bg-background hidden lg:flex flex-col sticky top-0 h-screen">
+        <div className="p-6 border-b">
+          <div className="flex items-center gap-3">
+            <div className="bg-primary rounded-lg p-2 shadow-sm">
               <LayoutDashboard className="h-5 w-5 text-primary-foreground" />
             </div>
-            <span className="font-bold text-xl tracking-tight">Admin Console</span>
+            <span className="font-bold text-lg tracking-tight">DC Unovation</span>
           </div>
-          <Button variant="ghost" size="sm" onClick={handleLogout} className="text-muted-foreground hover:text-destructive">
-            <LogOut className="h-4 w-4 mr-2" />
-            Logout
+        </div>
+        
+        <div className="flex-1 py-6 px-4 space-y-2">
+          <div className="text-xs font-semibold text-muted-foreground uppercase px-2 mb-2 tracking-wider">Navigation</div>
+          <Button 
+            variant={activeTab === "overview" ? "secondary" : "ghost"} 
+            className="w-full justify-start gap-3 h-10 px-3"
+            onClick={() => setActiveTab("overview")}
+          >
+            <TrendingUp className="h-4 w-4" /> Overview
+          </Button>
+          <Button 
+            variant={activeTab === "inquiries" ? "secondary" : "ghost"} 
+            className="w-full justify-start gap-3 h-10 px-3"
+            onClick={() => setActiveTab("inquiries")}
+          >
+            <MessageSquare className="h-4 w-4" /> Inquiries
+          </Button>
+          <Button 
+            variant={activeTab === "quotes" ? "secondary" : "ghost"} 
+            className="w-full justify-start gap-3 h-10 px-3"
+            onClick={() => setActiveTab("quotes")}
+          >
+            <Quote className="h-4 w-4" /> Quotes
+          </Button>
+          <Button 
+            variant={activeTab === "contact" ? "secondary" : "ghost"} 
+            className="w-full justify-start gap-3 h-10 px-3"
+            onClick={() => setActiveTab("contact")}
+          >
+            <FileText className="h-4 w-4" /> Contact Forms
+          </Button>
+          <Button 
+            variant={activeTab === "newsletter" ? "secondary" : "ghost"} 
+            className="w-full justify-start gap-3 h-10 px-3"
+            onClick={() => setActiveTab("newsletter")}
+          >
+            <Mail className="h-4 w-4" /> Subscribers
           </Button>
         </div>
-      </nav>
 
-      <main className="container mx-auto px-4 py-8 space-y-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {stats.map((stat, idx) => (
-            <Card key={idx} className="hover-elevate">
-              <CardContent className="pt-6 flex items-center gap-4">
-                <div className={`p-3 rounded-full bg-background border ${stat.color}`}>
-                  <stat.icon className="h-5 w-5" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">{stat.label}</p>
-                  <p className="text-2xl font-bold">{stat.value}</p>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+        <div className="p-4 border-t mt-auto">
+          <Button variant="ghost" className="w-full justify-start text-muted-foreground hover:text-destructive h-10" onClick={handleLogout}>
+            <LogOut className="h-4 w-4 mr-3" /> Logout
+          </Button>
         </div>
+      </aside>
 
-        <Tabs defaultValue="inquiries" className="w-full">
-          <div className="flex items-center justify-between mb-4">
-            <TabsList className="bg-background border h-11 p-1">
-              <TabsTrigger value="inquiries" className="data-[state=active]:bg-muted">Inquiries</TabsTrigger>
-              <TabsTrigger value="quotes" className="data-[state=active]:bg-muted">Quotes</TabsTrigger>
-              <TabsTrigger value="contact" className="data-[state=active]:bg-muted">Contact</TabsTrigger>
-              <TabsTrigger value="newsletter" className="data-[state=active]:bg-muted">Subscribers</TabsTrigger>
-            </TabsList>
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col min-w-0">
+        <header className="h-16 border-b bg-background/80 backdrop-blur-md sticky top-0 z-20 px-6 flex items-center justify-between lg:justify-end">
+          <div className="lg:hidden flex items-center gap-3">
+            <LayoutDashboard className="h-6 w-6 text-primary" />
+            <span className="font-bold">DC Unovation</span>
           </div>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 bg-muted rounded-full px-3 py-1.5 border">
+              <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+              <span className="text-xs font-medium">System Online</span>
+            </div>
+            <div className="h-8 w-8 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-bold text-xs">
+              AD
+            </div>
+          </div>
+        </header>
 
-          <TabsContent value="inquiries" className="mt-0">
-            <Card className="border-none shadow-sm overflow-hidden">
-              <CardHeader className="bg-background border-b px-6 py-4">
-                <CardTitle className="text-lg">Service Inquiries</CardTitle>
-                <CardDescription>Direct requests for specific digital services.</CardDescription>
-              </CardHeader>
-              <CardContent className="p-0">
-                <div className="overflow-x-auto">
-                  <Table>
-                    <TableHeader className="bg-muted/50">
-                      <TableRow>
-                        <TableHead className="w-[180px]">Name</TableHead>
-                        <TableHead>Email</TableHead>
-                        <TableHead>Service</TableHead>
-                        <TableHead className="max-w-[300px]">Message</TableHead>
-                        <TableHead className="text-right">Date</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {data?.serviceInquiries.length === 0 ? (
-                        <TableRow>
-                          <TableCell colSpan={5} className="h-32 text-center text-muted-foreground italic">No inquiries found yet.</TableCell>
-                        </TableRow>
-                      ) : (
-                        data?.serviceInquiries.map((item) => (
-                          <TableRow key={item.id} className="hover:bg-muted/30">
-                            <TableCell className="font-medium">{item.name}</TableCell>
-                            <TableCell>{item.email}</TableCell>
-                            <TableCell>
-                              <span className="inline-flex items-center rounded-full bg-blue-100 dark:bg-blue-900/30 px-2.5 py-0.5 text-xs font-medium text-blue-700 dark:text-blue-300">
-                                {item.service}
+        <main className="p-6 lg:p-10 max-w-7xl w-full mx-auto space-y-8">
+          {activeTab === "overview" ? (
+            <div className="space-y-8">
+              <div className="flex flex-col gap-1">
+                <h1 className="text-3xl font-bold tracking-tight">Welcome back, Admin</h1>
+                <p className="text-muted-foreground">Here's what's happening with your digital agency today.</p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {stats.map((stat, idx) => (
+                  <Card key={idx} className="hover-elevate overflow-hidden border-none shadow-sm group">
+                    <CardContent className="p-0">
+                      <div className="p-6 flex items-center justify-between">
+                        <div className="space-y-1">
+                          <p className="text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors">{stat.label}</p>
+                          <p className="text-3xl font-bold">{stat.value}</p>
+                        </div>
+                        <div className={`p-4 rounded-xl ${stat.bg} ${stat.color} transition-transform group-hover:scale-110`}>
+                          <stat.icon className="h-6 w-6" />
+                        </div>
+                      </div>
+                      <div className="px-6 pb-4 flex items-center gap-2 text-xs text-muted-foreground">
+                        <TrendingUp className="h-3 w-3 text-green-500" />
+                        <span className="text-green-500 font-medium">+4%</span>
+                        <span>from last week</span>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-7 gap-6">
+                <Card className="lg:col-span-4 border-none shadow-sm">
+                  <CardHeader>
+                    <CardTitle>Recent Activity</CardTitle>
+                    <CardDescription>Latest interactions across all forms</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    {recentActivity.length === 0 ? (
+                      <div className="h-40 flex items-center justify-center text-muted-foreground italic">No recent activity</div>
+                    ) : (
+                      recentActivity.map((activity: any, idx) => (
+                        <div key={idx} className="flex items-start gap-4 p-4 rounded-lg bg-muted/40 border border-transparent hover:border-border hover:bg-muted/60 transition-all group">
+                          <div className={`p-2.5 rounded-full bg-background border ${activity.color}`}>
+                            <activity.icon className="h-4 w-4" />
+                          </div>
+                          <div className="flex-1 space-y-1">
+                            <div className="flex items-center justify-between">
+                              <p className="font-semibold text-sm">{activity.name}</p>
+                              <span className="text-xs text-muted-foreground flex items-center gap-1">
+                                <Clock className="h-3 w-3" /> {new Date(activity.timestamp).toLocaleDateString()}
                               </span>
-                            </TableCell>
-                            <TableCell className="max-w-[300px] truncate" title={item.message}>{item.message}</TableCell>
-                            <TableCell className="text-right text-muted-foreground">{new Date(item.timestamp).toLocaleDateString()}</TableCell>
-                          </TableRow>
-                        ))
-                      )}
-                    </TableBody>
-                  </Table>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
+                            </div>
+                            <p className="text-xs text-muted-foreground">Submitted a <span className="font-medium text-foreground">{activity.type}</span> request</p>
+                          </div>
+                          <ChevronRight className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity self-center" />
+                        </div>
+                      ))
+                    )}
+                    {recentActivity.length > 0 && (
+                      <Button variant="ghost" className="w-full mt-2 text-xs h-8" onClick={() => setActiveTab("inquiries")}>
+                        View all activity
+                      </Button>
+                    )}
+                  </CardContent>
+                </Card>
 
-          <TabsContent value="quotes" className="mt-0">
-            <Card className="border-none shadow-sm overflow-hidden">
-              <CardHeader className="bg-background border-b px-6 py-4">
-                <CardTitle className="text-lg">Quote Requests</CardTitle>
-                <CardDescription>Prospective clients looking for project estimates.</CardDescription>
-              </CardHeader>
-              <CardContent className="p-0">
-                <div className="overflow-x-auto">
-                  <Table>
-                    <TableHeader className="bg-muted/50">
-                      <TableRow>
-                        <TableHead className="w-[180px]">Name</TableHead>
-                        <TableHead>Email</TableHead>
-                        <TableHead>Project Type</TableHead>
-                        <TableHead>Budget</TableHead>
-                        <TableHead className="text-right">Date</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {data?.quoteRequests.length === 0 ? (
-                        <TableRow>
-                          <TableCell colSpan={5} className="h-32 text-center text-muted-foreground italic">No quote requests found.</TableCell>
-                        </TableRow>
-                      ) : (
-                        data?.quoteRequests.map((item) => (
-                          <TableRow key={item.id} className="hover:bg-muted/30">
-                            <TableCell className="font-medium">{item.name}</TableCell>
-                            <TableCell>{item.email}</TableCell>
-                            <TableCell>
-                              <span className="inline-flex items-center rounded-full bg-green-100 dark:bg-green-900/30 px-2.5 py-0.5 text-xs font-medium text-green-700 dark:text-green-300">
-                                {item.projectType}
-                              </span>
-                            </TableCell>
-                            <TableCell className="font-medium text-green-600 dark:text-green-400">{item.budget}</TableCell>
-                            <TableCell className="text-right text-muted-foreground">{new Date(item.timestamp).toLocaleDateString()}</TableCell>
-                          </TableRow>
-                        ))
-                      )}
-                    </TableBody>
-                  </Table>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
+                <Card className="lg:col-span-3 border-none shadow-sm">
+                  <CardHeader>
+                    <CardTitle>Quick Actions</CardTitle>
+                    <CardDescription>Common administrative tasks</CardDescription>
+                  </CardHeader>
+                  <CardContent className="grid grid-cols-1 gap-3">
+                    <Button variant="outline" className="justify-start gap-3 h-12">
+                      <ExternalLink className="h-4 w-4" /> View Live Site
+                    </Button>
+                    <Button variant="outline" className="justify-start gap-3 h-12">
+                      <User className="h-4 w-4" /> Update Admin Profile
+                    </Button>
+                    <Button variant="outline" className="justify-start gap-3 h-12">
+                      <Mail className="h-4 w-4" /> Export Subscribers
+                    </Button>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
+              <div className="flex flex-col gap-1">
+                <h2 className="text-2xl font-bold tracking-tight capitalize">{activeTab} Details</h2>
+                <p className="text-muted-foreground">Full data breakdown for your {activeTab}.</p>
+              </div>
 
-          <TabsContent value="contact" className="mt-0">
-            <Card className="border-none shadow-sm overflow-hidden">
-              <CardHeader className="bg-background border-b px-6 py-4">
-                <CardTitle className="text-lg">General Inquiries</CardTitle>
-                <CardDescription>Messages from the main contact form.</CardDescription>
-              </CardHeader>
-              <CardContent className="p-0">
-                <div className="overflow-x-auto">
-                  <Table>
-                    <TableHeader className="bg-muted/50">
-                      <TableRow>
-                        <TableHead className="w-[180px]">Name</TableHead>
-                        <TableHead>Contact Info</TableHead>
-                        <TableHead className="max-w-[300px]">Message</TableHead>
-                        <TableHead className="text-right">Date</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {data?.contactSubmissions.length === 0 ? (
-                        <TableRow>
-                          <TableCell colSpan={4} className="h-32 text-center text-muted-foreground italic">No messages yet.</TableCell>
-                        </TableRow>
-                      ) : (
-                        data?.contactSubmissions.map((item) => (
-                          <TableRow key={item.id} className="hover:bg-muted/30">
-                            <TableCell className="font-medium">{item.name}</TableCell>
-                            <TableCell>
-                              <div className="flex flex-col text-sm">
-                                <span>{item.email}</span>
-                                {item.phone && <span className="text-muted-foreground text-xs">{item.phone}</span>}
-                              </div>
-                            </TableCell>
-                            <TableCell className="max-w-[300px] truncate" title={item.message}>{item.message}</TableCell>
-                            <TableCell className="text-right text-muted-foreground">{new Date(item.timestamp).toLocaleDateString()}</TableCell>
+              <Card className="border-none shadow-sm overflow-hidden bg-background">
+                <CardHeader className="border-b px-6 py-4 flex flex-row items-center justify-between bg-muted/10">
+                  <div className="space-y-0.5">
+                    <CardTitle className="text-lg">Detailed Report</CardTitle>
+                    <CardDescription>Historical data view</CardDescription>
+                  </div>
+                  <Button variant="outline" size="sm" className="h-8">Export to CSV</Button>
+                </CardHeader>
+                <CardContent className="p-0">
+                  <div className="overflow-x-auto">
+                    {activeTab === "inquiries" && (
+                      <Table>
+                        <TableHeader className="bg-muted/30">
+                          <TableRow>
+                            <TableHead className="w-[180px] px-6">Client Name</TableHead>
+                            <TableHead>Email</TableHead>
+                            <TableHead>Selected Service</TableHead>
+                            <TableHead className="max-w-[250px]">Message</TableHead>
+                            <TableHead className="text-right px-6">Date</TableHead>
                           </TableRow>
-                        ))
-                      )}
-                    </TableBody>
-                  </Table>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
+                        </TableHeader>
+                        <TableBody>
+                          {data?.serviceInquiries.map((item) => (
+                            <TableRow key={item.id} className="hover:bg-muted/20 border-b">
+                              <TableCell className="font-medium px-6">{item.name}</TableCell>
+                              <TableCell>{item.email}</TableCell>
+                              <TableCell>
+                                <span className="inline-flex items-center rounded-full bg-blue-100 dark:bg-blue-900/30 px-2.5 py-0.5 text-xs font-semibold text-blue-700 dark:text-blue-300">
+                                  {item.service}
+                                </span>
+                              </TableCell>
+                              <TableCell className="max-w-[250px] truncate py-4" title={item.message}>{item.message}</TableCell>
+                              <TableCell className="text-right text-muted-foreground px-6">{new Date(item.timestamp).toLocaleDateString()}</TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    )}
+                    
+                    {activeTab === "quotes" && (
+                      <Table>
+                        <TableHeader className="bg-muted/30">
+                          <TableRow>
+                            <TableHead className="px-6">Name</TableHead>
+                            <TableHead>Email</TableHead>
+                            <TableHead>Project Type</TableHead>
+                            <TableHead>Budget Range</TableHead>
+                            <TableHead className="text-right px-6">Date</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {data?.quoteRequests.map((item) => (
+                            <TableRow key={item.id} className="hover:bg-muted/20 border-b">
+                              <TableCell className="font-medium px-6">{item.name}</TableCell>
+                              <TableCell>{item.email}</TableCell>
+                              <TableCell>
+                                <span className="inline-flex items-center rounded-full bg-green-100 dark:bg-green-900/30 px-2.5 py-0.5 text-xs font-semibold text-green-700 dark:text-green-300">
+                                  {item.projectType}
+                                </span>
+                              </TableCell>
+                              <TableCell className="font-bold text-green-600 dark:text-green-400">{item.budget}</TableCell>
+                              <TableCell className="text-right text-muted-foreground px-6">{new Date(item.timestamp).toLocaleDateString()}</TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    )}
 
-          <TabsContent value="newsletter" className="mt-0">
-            <Card className="border-none shadow-sm overflow-hidden">
-              <CardHeader className="bg-background border-b px-6 py-4">
-                <CardTitle className="text-lg">Newsletter Subscribers</CardTitle>
-                <CardDescription>Users who signed up for email updates.</CardDescription>
-              </CardHeader>
-              <CardContent className="p-0">
-                <div className="overflow-x-auto">
-                  <Table>
-                    <TableHeader className="bg-muted/50">
-                      <TableRow>
-                        <TableHead>Email Address</TableHead>
-                        <TableHead>Name</TableHead>
-                        <TableHead>Source</TableHead>
-                        <TableHead className="text-right">Subscription Date</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {data?.newsletterSubscriptions.length === 0 ? (
-                        <TableRow>
-                          <TableCell colSpan={4} className="h-32 text-center text-muted-foreground italic">No subscribers yet.</TableCell>
-                        </TableRow>
-                      ) : (
-                        data?.newsletterSubscriptions.map((item) => (
-                          <TableRow key={item.id} className="hover:bg-muted/30">
-                            <TableCell className="font-medium text-primary">{item.email}</TableCell>
-                            <TableCell>{item.name || "-"}</TableCell>
-                            <TableCell>
-                              <span className="capitalize text-xs font-semibold px-2 py-0.5 rounded-full bg-muted border">
-                                {item.source}
-                              </span>
-                            </TableCell>
-                            <TableCell className="text-right text-muted-foreground">{new Date(item.timestamp).toLocaleDateString()}</TableCell>
+                    {activeTab === "contact" && (
+                      <Table>
+                        <TableHeader className="bg-muted/30">
+                          <TableRow>
+                            <TableHead className="px-6">Sender</TableHead>
+                            <TableHead>Contact Info</TableHead>
+                            <TableHead className="max-w-[300px]">Message Preview</TableHead>
+                            <TableHead className="text-right px-6">Received On</TableHead>
                           </TableRow>
-                        ))
-                      )}
-                    </TableBody>
-                  </Table>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
-      </main>
+                        </TableHeader>
+                        <TableBody>
+                          {data?.contactSubmissions.map((item) => (
+                            <TableRow key={item.id} className="hover:bg-muted/20 border-b">
+                              <TableCell className="font-medium px-6">{item.name}</TableCell>
+                              <TableCell>
+                                <div className="flex flex-col">
+                                  <span className="text-sm font-medium">{item.email}</span>
+                                  <span className="text-xs text-muted-foreground">{item.phone || "No phone"}</span>
+                                </div>
+                              </TableCell>
+                              <TableCell className="max-w-[300px] truncate py-4" title={item.message}>{item.message}</TableCell>
+                              <TableCell className="text-right text-muted-foreground px-6">{new Date(item.timestamp).toLocaleDateString()}</TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    )}
+
+                    {activeTab === "newsletter" && (
+                      <Table>
+                        <TableHeader className="bg-muted/30">
+                          <TableRow>
+                            <TableHead className="px-6">Email Address</TableHead>
+                            <TableHead>Name</TableHead>
+                            <TableHead>Signup Source</TableHead>
+                            <TableHead className="text-right px-6">Date Joined</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {data?.newsletterSubscriptions.map((item) => (
+                            <TableRow key={item.id} className="hover:bg-muted/20 border-b">
+                              <TableCell className="font-bold text-primary px-6">{item.email}</TableCell>
+                              <TableCell>{item.name || "N/A"}</TableCell>
+                              <TableCell>
+                                <span className="bg-muted border rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                                  {item.source}
+                                </span>
+                              </TableCell>
+                              <TableCell className="text-right text-muted-foreground px-6">{new Date(item.timestamp).toLocaleDateString()}</TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    )}
+
+                    {(!data || data[activeTab as keyof AdminData]?.length === 0) && (
+                      <div className="h-60 flex flex-col items-center justify-center gap-2 text-muted-foreground border-t">
+                        <Loader2 className="h-6 w-6 opacity-20" />
+                        <p className="text-sm font-medium italic">No records found for this category</p>
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+        </main>
+      </div>
     </div>
   );
 }
