@@ -9,16 +9,19 @@ import Testimonials from "@/components/sections/Testimonials";
 import { Contact } from "@/components/sections/Contact";
 import { Footer } from "@/components/sections/Footer";
 import { BookDemoModal } from "@/components/modals/BookDemoModal";
+import { GetQuoteModal } from "@/components/modals/GetQuoteModal";
 import { useToast } from "@/hooks/use-toast";
 import {
     submitServiceInquiry,
     submitContact,
     submitNewsletterFooter,
+    submitQuote,
 } from "@/lib/api";
 
 export default function Home() {
     const { toast } = useToast();
     const [bookDemoOpen, setBookDemoOpen] = useState(false);
+    const [quoteOpen, setQuoteOpen] = useState(false);
 
     const handleBookDemo = async (data: {
         name: string;
@@ -45,8 +48,33 @@ export default function Home() {
         }
     };
 
+    const handleQuoteSubmit = async (data: {
+        name: string;
+        email: string;
+        projectType: string;
+        budget: string;
+        message: string;
+    }) => {
+        try {
+            await submitQuote({
+                ...data,
+                page: "home",
+            });
+            toast({
+                title: "Quote Request Received!",
+                description: "We'll review your details and get back to you with a tailored quote.",
+            });
+        } catch (error) {
+            toast({
+                title: "Error",
+                description: "Failed to submit quote request. Please try again.",
+                variant: "destructive",
+            });
+        }
+    };
+
     const handleGetQuote = async () => {
-        setBookDemoOpen(true);
+        setQuoteOpen(true);
     };
 
     const handleContactSubmit = async (data: {
@@ -101,7 +129,7 @@ export default function Home() {
             <Services />
             <Process />
             <About />
-            <Pricing />
+            <Pricing onGetStarted={() => setBookDemoOpen(true)} onGetQuote={handleGetQuote} />
             <Contact onSubmit={handleContactSubmit} />
             <Testimonials />
             <Footer onNewsletterSubmit={handleNewsletterSubmit} />
@@ -110,6 +138,12 @@ export default function Home() {
                 open={bookDemoOpen}
                 onOpenChange={setBookDemoOpen}
                 onSubmit={handleBookDemo}
+            />
+
+            <GetQuoteModal
+                open={quoteOpen}
+                onOpenChange={setQuoteOpen}
+                onSubmit={handleQuoteSubmit}
             />
         </div>
     );

@@ -51,3 +51,24 @@ export async function submitNewsletterFooter(email: string) {
 
   return response.json();
 }
+
+export async function submitQuote(data: {
+  name: string;
+  email: string;
+  projectType: string;
+  budget: string;
+  message: string;
+  page: string;
+}) {
+  const response = await fetch("/api/forms/quote", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to submit quote request");
+  }
+
+  return response.json();
+}

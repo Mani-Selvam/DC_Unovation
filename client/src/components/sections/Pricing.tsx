@@ -13,7 +13,12 @@ import {
     Database,
 } from "lucide-react";
 
-export function Pricing() {
+interface PricingProps {
+    onGetStarted: () => void;
+    onGetQuote: () => void;
+}
+
+export function Pricing({ onGetStarted, onGetQuote }: PricingProps) {
     const plans = [
         {
             name: "Basic Website",
@@ -152,6 +157,7 @@ export function Pricing() {
                             </ul>
 
                             <button
+                                onClick={onGetStarted}
                                 className={`w-full rounded-xl py-3 font-bold transition-all hover:scale-[1.02] ${
                                     plan.popular
                                         ? "bg-indigo-600 text-white shadow-lg shadow-indigo-200 hover:bg-indigo-700"
@@ -204,7 +210,9 @@ export function Pricing() {
                                         </span>
                                     </div>
                                 </div>
-                                <button className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-6 py-3 text-sm font-bold text-white transition-all hover:bg-slate-800 hover:gap-3">
+                                <button 
+                                    onClick={onGetQuote}
+                                    className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-6 py-3 text-sm font-bold text-white transition-all hover:bg-slate-800 hover:gap-3">
                                     Get a Quote
                                     <ArrowRight className="h-4 w-4" />
                                 </button>

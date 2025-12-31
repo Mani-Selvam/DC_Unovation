@@ -41,6 +41,19 @@ export const contactSubmissions = pgTable("contact_submissions", {
     timestamp: timestamp("timestamp").notNull().defaultNow(),
 });
 
+export const quoteRequests = pgTable("quote_requests", {
+    id: text("id")
+        .primaryKey()
+        .default(sql`gen_random_uuid()`),
+    name: text("name").notNull(),
+    email: text("email").notNull(),
+    projectType: text("project_type").notNull(),
+    budget: text("budget").notNull(),
+    message: text("message").notNull(),
+    page: text("page").notNull(),
+    timestamp: timestamp("timestamp").notNull().defaultNow(),
+});
+
 export const insertServiceInquirySchema = createInsertSchema(
     serviceInquiries
 ).omit({
@@ -62,6 +75,13 @@ export const insertContactSubmissionSchema = createInsertSchema(
     timestamp: true,
 });
 
+export const insertQuoteRequestSchema = createInsertSchema(
+    quoteRequests
+).omit({
+    id: true,
+    timestamp: true,
+});
+
 export type InsertServiceInquiry = z.infer<typeof insertServiceInquirySchema>;
 export type ServiceInquiry = typeof serviceInquiries.$inferSelect;
 
@@ -75,3 +95,6 @@ export type InsertContactSubmission = z.infer<
     typeof insertContactSubmissionSchema
 >;
 export type ContactSubmission = typeof contactSubmissions.$inferSelect;
+
+export type InsertQuoteRequest = z.infer<typeof insertQuoteRequestSchema>;
+export type QuoteRequest = typeof quoteRequests.$inferSelect;
