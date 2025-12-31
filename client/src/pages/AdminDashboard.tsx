@@ -43,7 +43,8 @@ interface AdminData {
   newsletterSubscriptions: NewsletterSubscription[];
 }
 
-export default function AdminDashboard({ defaultTab }: { defaultTab?: string }) {
+export default function AdminDashboard(props: any) {
+  const defaultTab = props.defaultTab;
   const [, setLocation] = useLocation();
   const [activeTab, setActiveTab] = useState(defaultTab || "overview");
   const { toast } = useToast();
