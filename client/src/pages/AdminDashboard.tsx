@@ -166,9 +166,23 @@ export default function AdminDashboard() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-background">
-        <div className="flex flex-col items-center gap-4">
+        <div className="flex flex-col items-center gap-4 text-center">
           <Loader2 className="h-10 w-10 animate-spin text-primary" />
           <p className="text-sm text-muted-foreground animate-pulse">Loading dashboard data...</p>
+          <div className="mt-4 p-4 border rounded-md bg-muted/50 max-w-md">
+            <p className="text-xs text-muted-foreground italic">
+              Taking a long time? This might be due to a cold start or database connection. 
+              Please try refreshing the page if it takes more than 30 seconds.
+            </p>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="mt-4" 
+              onClick={() => window.location.reload()}
+            >
+              Refresh Dashboard
+            </Button>
+          </div>
         </div>
       </div>
     );
