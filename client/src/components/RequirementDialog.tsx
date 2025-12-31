@@ -122,7 +122,7 @@ export function RequirementDialog({ clientId, requirement, open, onOpenChange }:
                       type="date" 
                       className="cursor-pointer"
                       {...field} 
-                      value={field.value ? (field.value instanceof Date ? field.value.toISOString().split('T')[0] : String(field.value)) : ""}
+                      value={field.value ? (field.value && typeof field.value === 'object' && 'toISOString' in field.value ? (field.value as Date).toISOString().split('T')[0] : String(field.value)) : ""}
                       onChange={(e) => field.onChange(e.target.value)}
                     />
                   </FormControl>

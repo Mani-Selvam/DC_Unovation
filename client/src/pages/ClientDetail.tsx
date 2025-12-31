@@ -283,6 +283,16 @@ export default function ClientDetail() {
                 <p className="text-sm font-semibold text-foreground">{requirement.budgetRange}</p>
               </div>
             )}
+            {requirement.deadline && (
+              <div className="p-4 rounded-lg border-2 border-red-200 dark:border-red-800 bg-gradient-to-br from-red-50 to-red-100/30 dark:from-red-950 dark:to-red-900/30">
+                <p className="text-xs text-muted-foreground uppercase tracking-wide font-medium mb-1">Deadline</p>
+                <p className="text-sm font-semibold text-red-600 dark:text-red-400">
+                  {requirement.deadline instanceof Date 
+                    ? requirement.deadline.toLocaleDateString('en-IN')
+                    : new Date(requirement.deadline as string).toLocaleDateString('en-IN')}
+                </p>
+              </div>
+            )}
             {requirement.features && (
               <div className="p-4 rounded-lg border border-gray-200 dark:border-gray-800 bg-gradient-to-br from-gray-50 to-gray-100/50 dark:from-gray-950 dark:to-gray-900/50 md:col-span-2">
                 <p className="text-xs text-muted-foreground uppercase tracking-wide font-medium mb-1">Features</p>
