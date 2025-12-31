@@ -25,6 +25,18 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/admin" component={AdminLogin} />
       <Route path="/admin/dashboard" component={AdminDashboard} />
+      <Route path="/admin/dashboard/inquiries">
+        <AdminDashboard defaultTab="inquiries" />
+      </Route>
+      <Route path="/admin/dashboard/quotes">
+        <AdminDashboard defaultTab="quotes" />
+      </Route>
+      <Route path="/admin/dashboard/contact">
+        <AdminDashboard defaultTab="contact" />
+      </Route>
+      <Route path="/admin/dashboard/newsletter">
+        <AdminDashboard defaultTab="newsletter" />
+      </Route>
       
       {/* CRM Routes - Integrated under Admin Dashboard */}
       <Route path="/admin/dashboard/crm" component={CrmDashboard} />

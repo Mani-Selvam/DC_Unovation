@@ -43,10 +43,16 @@ interface AdminData {
   newsletterSubscriptions: NewsletterSubscription[];
 }
 
-export default function AdminDashboard() {
+export default function AdminDashboard({ defaultTab }: { defaultTab?: string }) {
   const [, setLocation] = useLocation();
-  const [activeTab, setActiveTab] = useState("overview");
+  const [activeTab, setActiveTab] = useState(defaultTab || "overview");
   const { toast } = useToast();
+
+  useEffect(() => {
+    if (defaultTab) {
+      setActiveTab(defaultTab);
+    }
+  }, [defaultTab]);
 
   useEffect(() => {
     if (localStorage.getItem("admin_auth") !== "true") {
@@ -57,6 +63,14 @@ export default function AdminDashboard() {
   const { data, isLoading } = useQuery<AdminData>({
     queryKey: ["/api/admin/data"],
   });
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const tab = searchParams.get("tab");
+    if (tab) {
+      setActiveTab(tab);
+    }
+  }, []);
 
   const deleteMutation = useMutation({
     mutationFn: async ({ type, id }: { type: string; id: string }) => {
