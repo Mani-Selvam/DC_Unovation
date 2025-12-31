@@ -1,7 +1,6 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { forwardToN8n } from "./n8nClient";
 import {
   insertServiceInquirySchema,
   insertNewsletterSubscriptionSchema,
@@ -15,14 +14,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const record = await storage.createServiceInquiry(data);
       
-      await forwardToN8n("service_inquiry_form", {
-        name: data.name,
-        email: data.email,
-        service: data.service,
-        message: data.message,
-        page: data.page,
-      });
-
       res.json({ success: true, id: record.id });
     } catch (error) {
       console.error("Service inquiry error:", error);
@@ -36,14 +27,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const record = await storage.createContactSubmission(data);
       
-      await forwardToN8n("context_form_submission", {
-        name: data.name,
-        email: data.email,
-        phone: data.phone,
-        message: data.message,
-        page: data.page,
-      });
-
       res.json({ success: true, id: record.id });
     } catch (error) {
       console.error("Contact submission error:", error);
@@ -60,11 +43,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const record = await storage.createNewsletterSubscription(data);
       
-      await forwardToN8n("newsletter_footer_signup", {
-        email: data.email,
-        source: "footer",
-      });
-
       res.json({ success: true, id: record.id });
     } catch (error) {
       console.error("Newsletter footer signup error:", error);
