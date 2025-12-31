@@ -149,7 +149,10 @@ export const insertClientSchema = createInsertSchema(clients).omit({
     dateAdded: true,
 });
 
-export const insertFollowUpSchema = createInsertSchema(followUps).omit({
+export const insertFollowUpSchema = createInsertSchema(followUps, {
+    followUpDate: z.string().transform(v => new Date(v)),
+    nextFollowUpDate: z.string().optional().transform(v => v ? new Date(v) : undefined),
+}).omit({
     id: true,
     dateCreated: true,
 });
