@@ -8,6 +8,8 @@ import dotenv from "dotenv";
 // Load environment variables
 dotenv.config();
 neonConfig.webSocketConstructor = ws;
+// Disable pooling temporarily to avoid ErrorEvent TypeError in @neondatabase/serverless
+neonConfig.usePool = false;
 
 if (!process.env.DATABASE_URL) {
     throw new Error(
