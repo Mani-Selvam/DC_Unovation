@@ -120,8 +120,10 @@ export function RequirementDialog({ clientId, requirement, open, onOpenChange }:
                   <FormControl>
                     <Input 
                       type="date" 
+                      className="cursor-pointer"
                       {...field} 
-                      onChange={(e) => field.onChange(e.target.value ? new Date(e.target.value) : undefined)}
+                      value={field.value instanceof Date ? field.value.toISOString().split('T')[0] : field.value || ""}
+                      onChange={(e) => field.onChange(e.target.value)}
                     />
                   </FormControl>
                   <FormMessage />
