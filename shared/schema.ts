@@ -7,6 +7,28 @@ import {
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
+export const leads = pgTable("leads", {
+    id: text("id")
+        .primaryKey()
+        .default(sql`gen_random_uuid()`),
+    name: text("name").notNull(),
+    contact: text("contact").notNull(), // Phone or Email
+    companyName: text("company_name"),
+    serviceNeeded: text("service_needed").notNull(),
+    source: text("source").notNull(), // WhatsApp / Call / Website
+    status: text("status").notNull().default("new"),
+    timestamp: timestamp("timestamp").notNull().defaultNow(),
+});
+
+export const insertLeadSchema = createInsertSchema(leads).omit({
+    id: true,
+    timestamp: true,
+    status: true,
+});
+
+export type InsertLead = z.infer<typeof insertLeadSchema>;
+export type Lead = typeof leads.$inferSelect;
+
 export const serviceInquiries = pgTable("service_inquiries", {
     id: text("id")
         .primaryKey()

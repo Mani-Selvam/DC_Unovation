@@ -30,14 +30,40 @@ import {
   AlertCircle,
   Clock3,
   XCircle,
-  StickyNote
+  StickyNote,
+  Plus,
+  Phone,
+  Building2,
+  Globe
 } from "lucide-react";
 import {
   type ServiceInquiry,
   type QuoteRequest,
   type ContactSubmission,
   type NewsletterSubscription,
+  type Lead,
+  insertLeadSchema
 } from "@shared/schema";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
