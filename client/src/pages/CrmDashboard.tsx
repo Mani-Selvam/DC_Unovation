@@ -3,6 +3,7 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { CrmSidebar } from "@/components/CrmSidebar";
 import type { Client } from "@shared/schema";
 import { Plus, Users, PhoneCall, Briefcase } from "lucide-react";
 
@@ -14,7 +15,10 @@ export default function CrmDashboard() {
   const totalClients = clients?.length || 0;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900 p-8">
+    <div className="flex h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900">
+      <CrmSidebar />
+      
+      <div className="flex-1 overflow-auto p-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
