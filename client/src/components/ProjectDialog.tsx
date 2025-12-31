@@ -118,7 +118,7 @@ export function ProjectDialog({ clientId, project, open, onOpenChange }: Project
                       type="date" 
                       className="cursor-pointer"
                       {...field} 
-                      value={field.value instanceof Date ? field.value.toISOString().split('T')[0] : field.value || ""}
+                      value={field.value ? (field.value instanceof Date ? field.value.toISOString().split('T')[0] : String(field.value)) : ""}
                       onChange={(e) => field.onChange(e.target.value)}
                     />
                   </FormControl>
