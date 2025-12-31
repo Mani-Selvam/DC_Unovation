@@ -59,8 +59,11 @@ export default function AdminDashboard() {
     }
   }, [setLocation]);
 
-  const { data, isLoading } = useQuery<AdminData>({
+  const { data, isLoading, isError, refetch } = useQuery<AdminData>({
     queryKey: ["/api/admin/data"],
+    retry: 5,
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 15000),
+    staleTime: 5000,
   });
 
   const deleteMutation = useMutation({
@@ -166,24 +169,63 @@ export default function AdminDashboard() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-background">
-        <div className="flex flex-col items-center gap-4 text-center">
-          <Loader2 className="h-10 w-10 animate-spin text-primary" />
-          <p className="text-sm text-muted-foreground animate-pulse">Loading dashboard data...</p>
-          <div className="mt-4 p-4 border rounded-md bg-muted/50 max-w-md">
-            <p className="text-xs text-muted-foreground italic">
-              Taking a long time? This might be due to a cold start or database connection. 
-              Please try refreshing the page if it takes more than 30 seconds.
+        <div className="flex flex-col items-center gap-4 text-center p-6">
+          <div className="relative">
+            <Loader2 className="h-12 w-12 animate-spin text-primary" />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="h-2 w-2 rounded-full bg-primary animate-pulse" />
+            </div>
+          </div>
+          <div className="space-y-2">
+            <p className="text-lg font-semibold tracking-tight">Accessing Dashboard</p>
+            <p className="text-sm text-muted-foreground max-w-[280px]">
+              We're connecting to the database. This may take a moment if the system is waking up.
             </p>
+          </div>
+          <div className="mt-8 p-4 border rounded-xl bg-muted/30 max-w-sm backdrop-blur-sm">
+            <p className="text-[11px] leading-relaxed text-muted-foreground uppercase font-bold tracking-widest mb-3 opacity-70">
+              Connection Status
+            </p>
+            <div className="flex items-center justify-center gap-2 mb-4">
+              <div className="h-1.5 w-1.5 rounded-full bg-yellow-500 animate-ping" />
+              <span className="text-xs font-medium italic">Establishing secure tunnel...</span>
+            </div>
             <Button 
-              variant="outline" 
+              variant="secondary" 
               size="sm" 
-              className="mt-4" 
-              onClick={() => window.location.reload()}
+              className="w-full h-9 font-bold" 
+              onClick={() => refetch()}
             >
-              Refresh Dashboard
+              Retry Connection
             </Button>
           </div>
         </div>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-background p-6">
+        <Card className="max-w-md w-full border-destructive/50">
+          <CardHeader>
+            <CardTitle className="text-destructive flex items-center gap-2">
+              <AlertCircle className="h-5 w-5" />
+              Connection Error
+            </CardTitle>
+            <CardDescription>
+              We couldn't connect to the database to fetch your dashboard data.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <p className="text-sm text-muted-foreground">
+              This usually happens when the database is waking up or there's a temporary network glitch.
+            </p>
+            <Button className="w-full" onClick={() => refetch()}>
+              Try Again
+            </Button>
+          </CardContent>
+        </Card>
       </div>
     );
   }
