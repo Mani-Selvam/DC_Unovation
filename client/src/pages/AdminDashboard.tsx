@@ -27,6 +27,7 @@ import {
   ExternalLink,
   Trash2
 } from "lucide-react";
+import { CrmSidebar } from "@/components/CrmSidebar";
 import {
   type ServiceInquiry,
   type QuoteRequest,
@@ -170,62 +171,7 @@ export default function AdminDashboard(props: any) {
 
   return (
     <div className="min-h-screen bg-muted/20 flex">
-      {/* Sidebar */}
-      <aside className="w-64 border-r bg-background hidden lg:flex flex-col sticky top-0 h-screen">
-        <div className="p-6 border-b">
-          <div className="flex items-center gap-3">
-            <div className="bg-primary rounded-lg p-2 shadow-sm">
-              <LayoutDashboard className="h-5 w-5 text-primary-foreground" />
-            </div>
-            <span className="font-bold text-lg tracking-tight">DC Unovation</span>
-          </div>
-        </div>
-        
-        <div className="flex-1 py-6 px-4 space-y-2">
-          <div className="text-xs font-semibold text-muted-foreground uppercase px-2 mb-2 tracking-wider">Navigation</div>
-          <Button 
-            variant={activeTab === "overview" ? "secondary" : "ghost"} 
-            className="w-full justify-start gap-3 h-10 px-3"
-            onClick={() => setActiveTab("overview")}
-          >
-            <TrendingUp className="h-4 w-4" /> Overview
-          </Button>
-          <Button 
-            variant={activeTab === "inquiries" ? "secondary" : "ghost"} 
-            className="w-full justify-start gap-3 h-10 px-3"
-            onClick={() => setActiveTab("inquiries")}
-          >
-            <MessageSquare className="h-4 w-4" /> Inquiries
-          </Button>
-          <Button 
-            variant={activeTab === "quotes" ? "secondary" : "ghost"} 
-            className="w-full justify-start gap-3 h-10 px-3"
-            onClick={() => setActiveTab("quotes")}
-          >
-            <Quote className="h-4 w-4" /> Quotes
-          </Button>
-          <Button 
-            variant={activeTab === "contact" ? "secondary" : "ghost"} 
-            className="w-full justify-start gap-3 h-10 px-3"
-            onClick={() => setActiveTab("contact")}
-          >
-            <FileText className="h-4 w-4" /> Contact Forms
-          </Button>
-          <Button 
-            variant={activeTab === "newsletter" ? "secondary" : "ghost"} 
-            className="w-full justify-start gap-3 h-10 px-3"
-            onClick={() => setActiveTab("newsletter")}
-          >
-            <Mail className="h-4 w-4" /> Subscribers
-          </Button>
-        </div>
-
-        <div className="p-4 border-t mt-auto">
-          <Button variant="ghost" className="w-full justify-start text-muted-foreground hover:text-destructive h-10" onClick={handleLogout}>
-            <LogOut className="h-4 w-4 mr-3" /> Logout
-          </Button>
-        </div>
-      </aside>
+      <CrmSidebar />
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-w-0">

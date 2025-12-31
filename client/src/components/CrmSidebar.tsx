@@ -1,6 +1,6 @@
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
-import { BarChart3, Settings, Users, FileText, AlertCircle, MessageSquare, Quote, Mail, LayoutDashboard } from "lucide-react";
+import { BarChart3, Settings, Users, FileText, AlertCircle, MessageSquare, Quote, Mail, LayoutDashboard, LogOut } from "lucide-react";
 
 export function CrmSidebar() {
   const [location] = useLocation();
@@ -36,10 +36,21 @@ export function CrmSidebar() {
       icon: Mail,
       testId: "button-crm-subscribers",
     },
+    {
+      label: "CRM Portal",
+      href: "/admin/dashboard/crm",
+      icon: Users,
+      testId: "button-crm-portal",
+    },
   ];
 
+  const handleLogout = () => {
+    localStorage.removeItem("admin_auth");
+    window.location.href = "/admin";
+  };
+
   return (
-    <aside className="w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-700 p-6 h-full sticky top-0 overflow-y-auto">
+    <aside className="w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-700 p-6 h-full sticky top-0 overflow-y-auto flex flex-col">
       {/* Logo/Title */}
       <div className="flex items-center gap-3 mb-8">
         <div className="bg-blue-500 rounded-lg p-2 shadow-sm">
@@ -49,7 +60,7 @@ export function CrmSidebar() {
       </div>
 
       {/* Navigation */}
-      <nav className="space-y-2">
+      <nav className="flex-1 space-y-2">
         <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-4">Navigation</p>
         <div className="space-y-2">
           {menuItems.map((item) => {
@@ -76,11 +87,16 @@ export function CrmSidebar() {
         </div>
       </nav>
 
-      {/* Footer Info */}
+      {/* Logout button at the bottom */}
       <div className="mt-auto pt-6 border-t border-slate-200 dark:border-slate-700">
-        <p className="text-xs text-muted-foreground">
-          Manage your CRM operations and client interactions
-        </p>
+        <Button 
+          variant="ghost" 
+          className="w-full justify-start gap-3 text-muted-foreground hover:text-destructive h-11"
+          onClick={handleLogout}
+        >
+          <LogOut className="h-5 w-5" />
+          <span>Logout</span>
+        </Button>
       </div>
     </aside>
   );
