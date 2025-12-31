@@ -118,7 +118,11 @@ export function RequirementDialog({ clientId, requirement, open, onOpenChange }:
                 <FormItem>
                   <FormLabel>Deadline</FormLabel>
                   <FormControl>
-                    <Input type="date" {...field} />
+                    <Input 
+                      type="date" 
+                      {...field} 
+                      onChange={(e) => field.onChange(e.target.value ? new Date(e.target.value) : undefined)}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
